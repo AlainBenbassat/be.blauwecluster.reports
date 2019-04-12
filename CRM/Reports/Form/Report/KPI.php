@@ -190,9 +190,9 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-3. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten';
-    $row['civicrm_contact_column2'] = '';
-    $row['civicrm_contact_column3'] = '';
-    $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column2'] = $kpiHelper->getC3($this->year1);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC3($this->year2);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC3($this->year3);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
