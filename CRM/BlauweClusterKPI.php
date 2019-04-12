@@ -8,11 +8,11 @@
 
 class CRM_BlauweClusterKPI {
   public function getC1($year) {
-    return 0;
+    return '';
   }
 
   public function getC1bis($year) {
-    return 0;
+    return '';
   }
 
   /*
