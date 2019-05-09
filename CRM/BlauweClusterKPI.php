@@ -11,6 +11,13 @@ class CRM_BlauweClusterKPI {
    * C1
    */
   public function getC1($year) {
+    /*
+     * HOE C1's TELLEN?
+     *
+     * Ipv te werken met getCx en getCxDetails
+     * misschien werken met de detail query en voor de count met
+     *  select count(*) from (DETAILQUERY) as counter
+     */
     return '';
   }
 
