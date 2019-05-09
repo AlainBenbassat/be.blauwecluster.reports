@@ -297,5 +297,49 @@ class CRM_BlauweClusterKPI {
 
   }
 
+  public function getC5($year, $detailsOrCount) {
+    $sql = "
+      select 
+        concat(DATE_FORMAT(c.display_name, ' (', GROUP_CONCAT(cs.subject SEPARATOR ', '), ')') as item
+      from
+        civicrm_case cs
+      inner join
+        civicrm_relationship r on r.case_id = cs.id
+      inner join 
+        civicrm_relationship_type rt on r.relationship_type_id = rt.id
+      inner join 
+        civicrm_contact c on c.id = r.contact_id_b 
+      inner join 
+        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+      where
+        c.contact_type = 'Organization'
+      and
+        c.is_deleted = 0
+      and
+        rt.label_a_b = 'Betrokken organisatie'
+      and 
+        ci.publiek_of_privaat__50 = 2 
+      and 
+        (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
+      group by
+        c.id
+      having
+        count(c.id) >= 3
+      order by
+        c.sort_name              
+    ";
+
+    if ($detailsOrCount == 'count') {
+      // return the number of records
+      $countSQL = "select count(*) from ($sql) as ctr";
+      $n = CRM_Core_DAO::singleValueQuery($countSQL);
+      return $n;
+    }
+    else {
+      // return the details
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao;
+    }
+  }
 
 }

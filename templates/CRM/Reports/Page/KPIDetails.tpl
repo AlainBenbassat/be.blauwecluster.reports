@@ -64,6 +64,14 @@
 
 
 <h3>C-5. Aantal unieke ondernemingen betrokken in samenwerkingsinitiatieven met minstens 3 ondernemingen</h3>
+<p><strong>Definitie</strong></p>
+<p>Aantal unieke bedrijven betrokken in de samenwerkingsinitiatieven met minstens drie ondernemingen.</p>
+<p><strong>Ondernemingen</strong></p>
+<ul>
+    {$c5Companies}
+</ul>
+<p>&nbsp</p>
+
 <h3>C-5 bis. Het aandeel van KMO's betrokken in samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
 <h3>C-6. Tevredenheid</h3>
 
