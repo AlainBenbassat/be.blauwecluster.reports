@@ -283,7 +283,7 @@ class CRM_BlauweClusterKPI {
         1              
     ";
 
-    if ('count') {
+    if ($detailsOrCount == 'count') {
       // return the number of records
       $countSQL = "select count(*) from ($sql) as ctr";
       $n = CRM_Core_DAO::singleValueQuery($countSQL);
