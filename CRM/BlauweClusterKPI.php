@@ -86,6 +86,8 @@ class CRM_BlauweClusterKPI {
         c.contact_type = 'Organization'
       and 
         ci.publiek_of_privaat__50 = 2
+      and 
+        c.is_deleted = 0
     ";
 
     $n = CRM_Core_DAO::singleValueQuery($sql);
@@ -95,8 +97,8 @@ class CRM_BlauweClusterKPI {
 
   public function getC3Details($year) {
     $sql = "
-      select
-        distinct c.display_name as item
+      select        
+        concat(c.display_name, ' (', GROUP_CONCAT(e.title SEPARATOR ', '), ')') as item 
       from
         civicrm_event e
       inner join
@@ -117,6 +119,10 @@ class CRM_BlauweClusterKPI {
         c.contact_type = 'Organization'
       and 
         ci.publiek_of_privaat__50 = 2
+      and 
+        c.is_deleted = 0
+      group by 
+        c.id
       order by 
         1
     ";
