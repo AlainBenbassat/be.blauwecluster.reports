@@ -47,6 +47,11 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
 
   public function preProcess() {
     $this->assign('reportTitle', "KPI's Blauwe Cluster");
+
+    $this->assign('year1', $this->year1);
+    $this->assign('year2', $this->year2);
+    $this->assign('year3', $this->year3);
+
     parent::preProcess();
   }
 
@@ -254,6 +259,14 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
+    $row = [];
+    $row['civicrm_contact_column1'] = 'S-2. Aantal samenwerkingsovereenkomsten met andere initiatieven in Vlaanderen of internationaal';
+    $row['civicrm_contact_column2'] = '';
+    $row['civicrm_contact_column3'] = '';
+    $row['civicrm_contact_column4'] = '';
+    $this->rowPostProcess($row, '');
+    $rows[] = $row;
+
     /*
      * custom drupal form met id en cs persoon
      * gegevens werkgever ophalen
@@ -298,5 +311,7 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
     // fill in column 5
     $row['civicrm_contact_column5'] = "$valSum / $valAvg";
   }
+
+
 
 }

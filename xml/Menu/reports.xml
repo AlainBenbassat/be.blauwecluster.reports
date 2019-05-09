@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/kpi-details</path>
+    <page_callback>CRM_Reports_Page_KPIDetails</page_callback>
+    <title>KPIDetails</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
