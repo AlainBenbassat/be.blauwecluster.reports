@@ -215,9 +215,9 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-4. Aantal gegenereerde samenwerkingsinitiatieven tussen minstens 3 ondernemingen';
-    $row['civicrm_contact_column2'] = '';
-    $row['civicrm_contact_column3'] = '';
-    $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column2'] = $kpiHelper->getC4($this->year1, 'count');
+    $row['civicrm_contact_column3'] = $kpiHelper->getC4($this->year2, 'count');
+    $row['civicrm_contact_column4'] = $kpiHelper->getC4($this->year3, 'count');
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
