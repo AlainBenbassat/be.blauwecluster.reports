@@ -23,7 +23,7 @@
 <h3>C-3. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten</h3>
 <p><strong>Definitie</strong></p>
 <p>Alle unieke ondernemingen die kennis verkrijgen via hun deelname aan een activiteit georganiseerd binnen de werking van DBC (workshops, seminaries, demonstraties, living lab, inspiratiesessies, ateliers...), al dan niet georganiseerd met partners (regionaal en internationaal).</p>
-<p><strong>Evenementen</strong></p>
+<p><strong>Ondernemingen</strong></p>
 <ul>
     {$c3Contacts}
 </ul>
