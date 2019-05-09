@@ -27,7 +27,7 @@ class CRM_BlauweClusterKPI {
       inner join
         civicrm_option_value et on e.event_type_id = et.value and et.option_group_id = 15
       where
-        e.start_date between '$year-01-01' and '$year-12-31'      
+        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
       and
         et.label = 'Netwerkevent' 
     ";
@@ -35,6 +35,27 @@ class CRM_BlauweClusterKPI {
     $n = CRM_Core_DAO::singleValueQuery($sql);
 
     return $n;
+  }
+
+  public function getC2Details($year) {
+    $sql = "
+      select
+        concat(DATE_FORMAT(start_date, '%d/%m/%Y'), ' ', e.title) item
+      from
+        civicrm_event e
+      inner join
+        civicrm_option_value et on e.event_type_id = et.value and et.option_group_id = 15
+      where
+        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
+      and
+        et.label = 'Netwerkevent' 
+      order by
+        start_date
+    ";
+
+    $dao = CRM_Core_DAO::executeQuery($sql);
+
+    return $dao;
   }
 
   /*
