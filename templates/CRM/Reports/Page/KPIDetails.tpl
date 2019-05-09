@@ -10,6 +10,7 @@
 <h2>CATEGORIE 2: CLUSTERWERKING</h2>
 <h3>C-1. Aantal actieve clusterleden</h3>
 <h3>C-1 bis. Aantal actieve KMO-clusterleden</h3>
+
 <h3>C-2. Aantal netwerkevents georganiseerd door de cluster</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal netwerkevents georganiseerd door DBC die open staan voor leden en stakeholders van DBC (al dan niet i.s.m. andere relevante initiatieven in Vlaanderen, NGO's...).</p>
@@ -17,8 +18,17 @@
 <ul>
     {$c2Events}
 </ul>
+<p>&nbsp</p>
 
 <h3>C-3. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten</h3>
+<p><strong>Definitie</strong></p>
+<p>Alle unieke ondernemingen die kennis verkrijgen via hun deelname aan een activiteit georganiseerd binnen de werking van DBC (workshops, seminaries, demonstraties, living lab, inspiratiesessies, ateliers...), al dan niet georganiseerd met partners (regionaal en internationaal).</p>
+<p><strong>Evenementen</strong></p>
+<ul>
+    {$c3Contacts}
+</ul>
+<p>&nbsp</p>
+
 <h3>C-4. Aantal gegenereerde samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
 <h3>C-5. Aantal unieke ondernemingen betrokken in samenwerkingsinitiatieven met minstens 3 ondernemingen</h3>
 <h3>C-5 bis. Het aandeel van KMO's betrokken in samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>

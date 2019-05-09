@@ -16,6 +16,10 @@ class CRM_Reports_Page_KPIDetails extends CRM_Core_Page {
     $items = $kpiHelper->getC2Details($year);
     $this->assign('c2Events', $this->daoToListItems($items));
 
+    // C3
+    $items = $kpiHelper->getC3Details($year);
+    $this->assign('c3Contacts', $this->daoToListItems($items));
+
     parent::run();
   }
 
