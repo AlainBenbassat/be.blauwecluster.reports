@@ -96,7 +96,7 @@ class CRM_BlauweClusterKPI {
   public function getC3Details($year) {
     $sql = "
       select
-        distinct c.display_name
+        distinct c.display_name as item
       from
         civicrm_event e
       inner join
