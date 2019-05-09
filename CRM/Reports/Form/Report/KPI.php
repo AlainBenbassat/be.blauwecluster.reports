@@ -48,9 +48,21 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
   public function preProcess() {
     $this->assign('reportTitle', "KPI's Blauwe Cluster");
 
-    $this->assign('year1', $this->year1);
-    $this->assign('year2', $this->year2);
-    $this->assign('year3', $this->year3);
+    // hyperlinks to KPI detail page
+    $linksToDetailsPage = 'Bekijk de details: ';
+    $years = [$this->year1, $this->year2, $this->year3];
+    foreach ($years as $year) {
+      $url = CRM_Utils_System::url('civicrm/kpi-details', 'reset=1&year=' . $year);
+      $link = '<a href="' . $url . '">' . $year . '</a>';
+
+      if ($year == $this->year1) {
+        $linksToDetailsPage .= $link;
+      }
+      else {
+        $linksToDetailsPage .= ', ' . $link;
+      }
+    }
+    $this->assign('linksToDetailsPage', $linksToDetailsPage);
 
     parent::preProcess();
   }
