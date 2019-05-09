@@ -254,7 +254,7 @@ class CRM_BlauweClusterKPI {
   public function getC4($year, $detailsOrCount) {
     $sql = "
       select 
-        concat(cs.subject, ' (', GROUP_CONCAT(c.display_name SEPARATOR ', '), ')') as item
+        concat(DATE_FORMAT(cs.start_date, '%d/%m/%Y'), ' - ', cs.subject, ' (', GROUP_CONCAT(c.display_name SEPARATOR ', '), ')') as item
       from
         civicrm_case cs
       inner join
