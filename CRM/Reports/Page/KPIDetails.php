@@ -12,6 +12,14 @@ class CRM_Reports_Page_KPIDetails extends CRM_Core_Page {
     // title
     CRM_Utils_System::setTitle('KPI Details: ' . $year);
 
+    // C1
+    $items = $kpiHelper->getC1Details($year, 'members');
+    $this->assign('c1Members', $this->daoToListItems($items));
+    $items = $kpiHelper->getC1Details($year, 'companies');
+    $this->assign('c1Companies', $this->daoToListItems($items));
+    $items = $kpiHelper->getC1Details($year, 'collaborations');
+    $this->assign('c1Collaborations', $this->daoToListItems($items));
+
     // C2
     $items = $kpiHelper->getC2Details($year);
     $this->assign('c2Events', $this->daoToListItems($items));

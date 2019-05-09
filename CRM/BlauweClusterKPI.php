@@ -7,10 +7,122 @@
  */
 
 class CRM_BlauweClusterKPI {
+  /*
+   * C1
+   */
   public function getC1($year) {
     return '';
   }
 
+  public function getC1Details($year, $section) {
+    $sql = '';
+
+    if ($section == 'members') {
+      $sql = "
+        select
+          concat(c.display_name, ' (', GROUP_CONCAT(e.title SEPARATOR ', '), ')') as item
+        from
+          civicrm_contact c
+        inner join
+          civicrm_participant p on p.contact_id = c.id
+        inner join 
+          civicrm_event e on e.id = p.event_id
+        where 
+          c.contact_type = 'Organization'
+        and
+          c.is_deleted = 0
+        and
+          year(e.start_date) = $year
+        and
+          p.status_id in (1, 2)  
+        and
+          exists (
+            select
+              m.id 
+            from
+              civicrm_membership m
+            where
+              m.contact_id = c.id
+            and 
+              year(m.start_date) <= $year and year(m.end_date) >= $year
+          )
+        group by
+          c.id
+        having
+          count(p.id) >= 2
+        order by
+          c.sort_name
+      ";
+    }
+    elseif ($section == 'companies') {
+      $sql = "
+        select
+          concat(c.display_name, ' (', GROUP_CONCAT(e.title SEPARATOR ', '), ')') as item
+        from
+          civicrm_contact c
+        inner join 
+          civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+        inner join
+          civicrm_participant p on p.contact_id = c.id
+        inner join 
+          civicrm_event e on e.id = p.event_id
+        where 
+          c.contact_type = 'Organization'
+        and
+          c.is_deleted = 0
+        and
+          year(e.start_date) = $year
+        and
+          p.status_id in (1, 2)  
+        and
+          ci.publiek_of_privaat__50 = 2
+        group by
+          c.id
+        having
+          count(p.id) >= 2
+        order by
+          c.sort_name
+      ";
+    }
+    elseif ($section == 'collaborations') {
+      $sql = "
+        select 
+          concat(c.display_name, ' (', GROUP_CONCAT(cs.subject SEPARATOR ', '), ')') as item
+        from
+          civicrm_case cs
+        inner join
+          civicrm_relationship r on r.case_id = cs.id
+        inner join 
+          civicrm_relationship_type rt on r.relationship_type_id = rt.id
+        inner join 
+          civicrm_contact c on c.id = r.contact_id_b 
+        inner join 
+          civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+        where
+          c.contact_type = 'Organization'
+        and
+          c.is_deleted = 0
+        and
+          rt.label_a_b = 'Betrokken organisatie'
+        and 
+          ci.publiek_of_privaat__50 = 2 
+        and 
+          (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
+        group by
+          c.id
+        order by
+          c.sort_name              
+      ";
+    }
+
+    $dao = CRM_Core_DAO::executeQuery($sql);
+
+    return $dao;
+  }
+
+  /*
+   * C1 bis
+   */
   public function getC1bis($year) {
     return '';
   }

@@ -13,6 +13,26 @@
 <h2>CATEGORIE 2: CLUSTERWERKING</h2>
 {**********************************}
 <h3>C-1. Aantal actieve clusterleden</h3>
+<p><strong>Definitie</strong></p>
+<p>Aantal betalende leden of unieke ondernemingen die beroep doen op of deelnemen aan minstens 2 clusterdiensten of -activiteiten of unieke ondernemingen die betrokken zijn bij samenwerkingsinitiatieven.</p>
+<p><strong>Leden met minstens 2 deelnames</strong></p>
+<ul>
+    {$c1Members}
+</ul>
+<p>&nbsp</p>
+
+<p><strong>Ondernemingen met minstens 2 deelnames</strong></p>
+<ul>
+    {$c1Companies}
+</ul>
+<p>&nbsp</p>
+
+<p><strong>Ondernemingen betrokken bij samenwerkingsinitiatieven</strong></p>
+<ul>
+    {$c1Collaborations}
+</ul>
+<p>&nbsp</p>
+
 <h3>C-1 bis. Aantal actieve KMO-clusterleden</h3>
 
 <h3>C-2. Aantal netwerkevents georganiseerd door de cluster</h3>
