@@ -4,11 +4,12 @@ use CRM_Reports_ExtensionUtil as E;
 class CRM_Reports_Page_KPIDetails extends CRM_Core_Page {
 
   public function run() {
-    // Example: Set the page-title dynamically; alternatively, declare a static title in xml/Menu/*.xml
-    CRM_Utils_System::setTitle(E::ts('KPIDetails'));
+    // get the year from the query string
+    $year = CRM_Utils_Request::retrieve('year', 'Integer', $this, TRUE);
 
-    // Example: Assign a variable for use in a template
-    $this->assign('currentTime', date('Y-m-d H:i:s'));
+    // title
+    CRM_Utils_System::setTitle('KPI Details: ' . $year);
+
 
     parent::run();
   }
