@@ -49,11 +49,9 @@ class CRM_BlauweClusterKPI {
       and
         c.is_deleted = 0
       and 
-        ci.publiek_of_privaat__50 = 2 $c1Bis        
+        ci.publiek_of_privaat__50 = 2 $bis        
       and 
         year(m.start_date) <= $year and year(m.end_date) >= $year
-      order by
-        c.sort_name
     ";
 
     $sqlCompanies = "
@@ -76,13 +74,11 @@ class CRM_BlauweClusterKPI {
       and
         p.status_id in (1, 2)  
       and
-        ci.publiek_of_privaat__50 = 2 $c1Bis
+        ci.publiek_of_privaat__50 = 2 $bis
       group by
         c.id
       having
         count(p.id) >= 2
-      order by
-        c.sort_name
     ";
 
     $sqlCollaborations = "
@@ -105,15 +101,13 @@ class CRM_BlauweClusterKPI {
       and
         rt.label_a_b = 'Betrokken organisatie'
       and 
-        ci.publiek_of_privaat__50 = 2 $c1Bis
+        ci.publiek_of_privaat__50 = 2 $bis
       and 
         year(cs.start_date) <= $year and ifnull(year(cs.end_date), 3000) >= $year
       and 
         cs.case_type_id in (3, 4, 5) 
       group by
         c.id
-      order by
-        c.sort_name              
     ";
 
     if ($justCount) {
@@ -123,13 +117,13 @@ class CRM_BlauweClusterKPI {
     }
     else {
       if ($section == 'members') {
-        $dao = CRM_Core_DAO::executeQuery($sqlMembers);
+        $dao = CRM_Core_DAO::executeQuery($sqlMembers . " order by c.sort_name");
       }
       elseif ($section == 'companies') {
-        $dao = CRM_Core_DAO::executeQuery($sqlCompanies);
+        $dao = CRM_Core_DAO::executeQuery($sqlCompanies . " order by c.sort_name");
       }
       elseif ($section == 'collaborations') {
-        $dao = CRM_Core_DAO::executeQuery($sqlCollaborations);
+        $dao = CRM_Core_DAO::executeQuery($sqlCollaborations . " order by c.sort_name");
       }
 
       return $dao;
