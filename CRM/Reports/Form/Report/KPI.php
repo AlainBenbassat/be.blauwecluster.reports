@@ -182,18 +182,17 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-1. Aantal actieve clusterleden';
-
-    $row['civicrm_contact_column2'] = $kpiHelper->getC1($this->year1);
-    $row['civicrm_contact_column3'] = $kpiHelper->getC1($this->year2);
-    $row['civicrm_contact_column4'] = $kpiHelper->getC1($this->year3);
+    $row['civicrm_contact_column2'] = $kpiHelper->getC1($this->year1, 'all', TRUE, FALSE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC1($this->year2, 'all', TRUE, FALSE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC1($this->year3, 'all', TRUE, FALSE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-1 bis. Aantal actieve KMO-clusterleden';
-    $row['civicrm_contact_column2'] = $kpiHelper->getC1bis($this->year1);
-    $row['civicrm_contact_column3'] = $kpiHelper->getC1bis($this->year2);
-    $row['civicrm_contact_column4'] = $kpiHelper->getC1bis($this->year3);
+    $row['civicrm_contact_column2'] = $kpiHelper->getC1($this->year1, 'all', TRUE, TRUE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC1($this->year2, 'all', TRUE, TRUE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC1($this->year3, 'all', TRUE, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 

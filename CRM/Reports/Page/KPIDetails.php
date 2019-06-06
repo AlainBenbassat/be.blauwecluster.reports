@@ -13,11 +13,19 @@ class CRM_Reports_Page_KPIDetails extends CRM_Core_Page {
     CRM_Utils_System::setTitle('KPI Details: ' . $year);
 
     // C1
-    $items = $kpiHelper->getC1Details($year, 'members');
+    $items = $kpiHelper->getC1($year, 'members', FALSE, FALSE);
     $this->assign('c1Members', $this->daoToListItems($items));
-    $items = $kpiHelper->getC1Details($year, 'companies');
+    $items = $kpiHelper->getC1Details($year, 'companies', FALSE, FALSE);
     $this->assign('c1Companies', $this->daoToListItems($items));
-    $items = $kpiHelper->getC1Details($year, 'collaborations');
+    $items = $kpiHelper->getC1Details($year, 'collaborations', FALSE, FALSE);
+    $this->assign('c1Collaborations', $this->daoToListItems($items));
+
+    // C1 bis
+    $items = $kpiHelper->getC1($year, 'members', FALSE, FALSE);
+    $this->assign('c1Members', $this->daoToListItems($items));
+    $items = $kpiHelper->getC1Details($year, 'companies', FALSE, FALSE);
+    $this->assign('c1Companies', $this->daoToListItems($items));
+    $items = $kpiHelper->getC1Details($year, 'collaborations', FALSE, FALSE);
     $this->assign('c1Collaborations', $this->daoToListItems($items));
 
     // C2
