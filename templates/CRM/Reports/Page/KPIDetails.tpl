@@ -35,19 +35,19 @@
 <h3>C-1. Aantal actieve clusterleden</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal betalende leden of unieke ondernemingen die beroep doen op of deelnemen aan minstens 2 clusterdiensten of -activiteiten of unieke ondernemingen die betrokken zijn bij samenwerkingsinitiatieven.</p>
-<p><strong>Leden met minstens 2 deelnames</strong></p>
+<p><strong>Betalende leden:</strong></p>
 <ul>
     {$c1Members}
 </ul>
 <p>&nbsp</p>
 
-<p><strong>Ondernemingen met minstens 2 deelnames</strong></p>
+<p><strong>Ondernemingen met minstens 2 deelnames:</strong></p>
 <ul>
     {$c1Companies}
 </ul>
 <p>&nbsp</p>
 
-<p><strong>Ondernemingen betrokken bij samenwerkingsinitiatieven</strong></p>
+<p><strong>Ondernemingen betrokken bij samenwerkingsinitiatieven:</strong></p>
 <ul>
     {$c1Collaborations}
 </ul>
@@ -56,7 +56,7 @@
 <h3>C-1 bis. Aantal actieve KMO-clusterleden</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal KMO's betrokken in C-1.</p>
-<p><strong>KMO's</strong></p>
+<p><strong>KMO's:</strong></p>
 <ul>
     {$c1bisCompanies}
 </ul>
@@ -65,7 +65,7 @@
 <h3>C-2. Aantal netwerkevents georganiseerd door de cluster</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal netwerkevents georganiseerd door DBC die open staan voor leden en stakeholders van DBC (al dan niet i.s.m. andere relevante initiatieven in Vlaanderen, NGO's...).</p>
-<p><strong>Evenementen</strong></p>
+<p><strong>Evenementen:</strong></p>
 <ul>
     {$c2Events}
 </ul>
@@ -74,7 +74,7 @@
 <h3>C-3. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten</h3>
 <p><strong>Definitie</strong></p>
 <p>Alle unieke ondernemingen die kennis verkrijgen via hun deelname aan een activiteit georganiseerd binnen de werking van DBC (workshops, seminaries, demonstraties, living lab, inspiratiesessies, ateliers...), al dan niet georganiseerd met partners (regionaal en internationaal).</p>
-<p><strong>Ondernemingen</strong></p>
+<p><strong>Ondernemingen:</strong></p>
 <ul>
     {$c3Contacts}
 </ul>
@@ -83,7 +83,7 @@
 <h3>C-4. Aantal gegenereerde samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal lopende samenwerkingsinitiatieven (incl. geoormerkte projecten) onder de vorm van gezamenlijke marktanalyses, operationele samenwerkingscontracten, onderzoeks-, innovatie-, demonstratieprojecten... met minstens drie ondernemingen.</p>
-<p><strong>Samenwerkingsinitiatieven</strong></p>
+<p><strong>Samenwerkingsinitiatieven:</strong></p>
 <ul>
     {$c4Collaborations}
 </ul>
@@ -93,7 +93,7 @@
 <h3>C-5. Aantal unieke ondernemingen betrokken in samenwerkingsinitiatieven met minstens 3 ondernemingen</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal unieke bedrijven betrokken in de samenwerkingsinitiatieven met minstens drie ondernemingen.</p>
-<p><strong>Ondernemingen</strong></p>
+<p><strong>Ondernemingen:</strong></p>
 <ul>
     {$c5Companies}
 </ul>
@@ -102,7 +102,7 @@
 <h3>C-5 bis. Het aandeel van KMO's betrokken in samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
 <p><strong>Definitie</strong></p>
 <p>% KMO's betrokken in de samenwerkingsinitiatieven met minstens drie ondernemingen.</p>
-<p><strong>Ondernemingen</strong></p>
+<p><strong>Ondernemingen:</strong></p>
 <ul>
     {$c5bisCompanies}
 </ul>
@@ -124,8 +124,8 @@
 
 <h3>S-2. Aantal samenwerkingsovereenkomsten met andere initiatieven in Vlaanderen of internationaal</h3>
 <p><strong>Definitie</strong></p>
-<p>Aantal lopende samenwerkingsovereenkomsten met andere initiatieven zoals kennisinstellingen, andere clusters in Vlaandere of internationaal.</p>
-<p><strong>Samenwerkingsovereenkomsten</strong></p>
+<p>Aantal lopende samenwerkingsovereenkomsten met andere initiatieven zoals kennisinstellingen, andere clusters in Vlaanderen of internationaal.</p>
+<p><strong>Samenwerkingsovereenkomsten:</strong></p>
 <ul>
     {$s2Collaborations}
 </ul>
