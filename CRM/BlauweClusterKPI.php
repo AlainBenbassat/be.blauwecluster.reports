@@ -93,6 +93,8 @@ class CRM_BlauweClusterKPI {
       and
         c.is_deleted = 0
       and
+        cs.is_deleted = 0  
+      and
         rt.label_a_b = 'Betrokken organisatie'
       and 
         ci.publiek_of_privaat__50 = 2 $bis
@@ -219,6 +221,8 @@ class CRM_BlauweClusterKPI {
       and
         c.is_deleted = 0
       and
+        cs.is_deleted = 0
+      and
         rt.label_a_b = 'Betrokken organisatie'
       and 
         ci.publiek_of_privaat__50 = 2 
@@ -245,40 +249,63 @@ class CRM_BlauweClusterKPI {
   public function getC5($year, $justCount, $c5Bis) {
     if ($c5Bis) {
       $bis = ' AND ci.grootte_27 in (1,2) ';
+      $bis2 = ' AND cci.grootte_27 in (1,2) ';
     }
     else {
       $bis = ' ';
+      $bis2 = ' ';
     }
 
     $sql = "
       select 
-        concat(c.display_name, ' (', GROUP_CONCAT(cs.subject SEPARATOR ', '), ')') as item
-      from
-        civicrm_case cs
+        distinct cc.display_name item
+      from 
+        civicrm_contact cc
+      inner join 
+        civicrm_value_organisatie_i_5 cci on cc.id = cci.entity_id 
       inner join
-        civicrm_relationship r on r.case_id = cs.id
+        civicrm_relationship cr on cr.contact_id_b = cc.id
       inner join 
-        civicrm_relationship_type rt on r.relationship_type_id = rt.id
-      inner join 
-        civicrm_contact c on c.id = r.contact_id_b 
-      inner join 
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+        civicrm_relationship_type crt on cr.relationship_type_id = crt.id  
       where
-        c.contact_type = 'Organization'
+        cc.contact_type = 'Organization'
       and
-        c.is_deleted = 0
+        cc.is_deleted = 0
       and
-        rt.label_a_b = 'Betrokken organisatie'
+        crt.label_a_b = 'Betrokken organisatie'
       and 
-        ci.publiek_of_privaat__50 = 2 $bis
-      and 
-        (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
-      group by
-        c.id
-      having
-        count(c.id) >= 3
-      order by
-        c.sort_name              
+        cci.publiek_of_privaat__50 = 2 $bis2 
+      and
+        cr.case_id in ( 
+          select         
+            cs.id
+          from
+            civicrm_case cs
+          inner join
+            civicrm_relationship r on r.case_id = cs.id
+          inner join 
+            civicrm_relationship_type rt on r.relationship_type_id = rt.id
+          inner join 
+            civicrm_contact c on c.id = r.contact_id_b 
+          inner join 
+            civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+          where
+            c.contact_type = 'Organization'
+          and
+            c.is_deleted = 0
+          and
+            cs.is_deleted = 0
+          and
+            rt.label_a_b = 'Betrokken organisatie'
+          and 
+            ci.publiek_of_privaat__50 = 2 $bis
+          and 
+            (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
+          group by 
+            cs.id
+          having 
+            count(c.id) >= 3
+        )
     ";
 
     if ($justCount) {
