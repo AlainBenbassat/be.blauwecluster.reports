@@ -22,16 +22,19 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
             'title' => $this->year1,
             'required' => TRUE,
             'dbAlias' => '1',
+            'type' => CRM_Utils_Type::T_INT,
           ],
           'column3' => [
             'title' => $this->year2,
             'required' => TRUE,
             'dbAlias' => '1',
+            'type' => CRM_Utils_Type::T_INT,
           ],
           'column4' => [
             'title' => $this->year3,
             'required' => TRUE,
             'dbAlias' => '1',
+            'type' => CRM_Utils_Type::T_INT,
           ],
           'column5' => [
             'title' => 'Cumulatief / Gemiddeld',
