@@ -236,9 +236,9 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-5 bis. Het aandeel van KMO\'s betrokken in samenwerkingsinitiatieven tussen minstens 3 ondernemingen';
-    $row['civicrm_contact_column2'] = round($kpiHelper->getC5($this->year1, TRUE, TRUE) / $c5y1 * 100);
-    $row['civicrm_contact_column3'] = round($kpiHelper->getC5($this->year2, TRUE, TRUE) / $c5y2 * 100);
-    $row['civicrm_contact_column4'] = round($kpiHelper->getC5($this->year3, TRUE, TRUE) / $c5y3 * 100);
+    $row['civicrm_contact_column2'] = round($kpiHelper->getC5($this->year1, TRUE, TRUE) / $c5y1 * 100) . '%';
+    $row['civicrm_contact_column3'] = round($kpiHelper->getC5($this->year2, TRUE, TRUE) / $c5y2 * 100) . '%';
+    $row['civicrm_contact_column4'] = round($kpiHelper->getC5($this->year3, TRUE, TRUE) / $c5y3 * 100) . '%';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
