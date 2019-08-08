@@ -198,41 +198,41 @@ class CRM_Reports_Form_Report_KPI extends CRM_Report_Form {
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-2. Aantal netwerkevents georganiseerd door de cluster';
-    $row['civicrm_contact_column2'] = $kpiHelper->getC2($this->year1);
-    $row['civicrm_contact_column3'] = $kpiHelper->getC2($this->year2);
-    $row['civicrm_contact_column4'] = $kpiHelper->getC2($this->year3);
+    $row['civicrm_contact_column2'] = $kpiHelper->getC2($this->year1, TRUE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC2($this->year2, TRUE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC2($this->year3, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-3. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten';
-    $row['civicrm_contact_column2'] = $kpiHelper->getC3($this->year1);
-    $row['civicrm_contact_column3'] = $kpiHelper->getC3($this->year2);
-    $row['civicrm_contact_column4'] = $kpiHelper->getC3($this->year3);
+    $row['civicrm_contact_column2'] = $kpiHelper->getC3($this->year1, TRUE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC3($this->year2, TRUE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC3($this->year3, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-4. Aantal gegenereerde samenwerkingsinitiatieven tussen minstens 3 ondernemingen';
-    $row['civicrm_contact_column2'] = $kpiHelper->getC4($this->year1, 'count');
-    $row['civicrm_contact_column3'] = $kpiHelper->getC4($this->year2, 'count');
-    $row['civicrm_contact_column4'] = $kpiHelper->getC4($this->year3, 'count');
+    $row['civicrm_contact_column2'] = $kpiHelper->getC4($this->year1, TRUE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC4($this->year2, TRUE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC4($this->year3, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-5. Aantal unieke ondernemingen betrokken in samenwerkingsinitiatieven met minstens 3 ondernemingen';
-    $row['civicrm_contact_column2'] = '';
-    $row['civicrm_contact_column3'] = '';
-    $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column2'] = $kpiHelper->getC5($this->year1, TRUE, FALSE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC5($this->year2, TRUE, FALSE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC5($this->year3, TRUE, FALSE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
     $row = [];
     $row['civicrm_contact_column1'] = 'C-5 bis. Het aandeel van KMO\'s betrokken in samenwerkingsinitiatieven tussen minstens 3 ondernemingen';
-    $row['civicrm_contact_column2'] = '';
-    $row['civicrm_contact_column3'] = '';
-    $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column2'] = $kpiHelper->getC5($this->year1, TRUE, TRUE);
+    $row['civicrm_contact_column3'] = $kpiHelper->getC5($this->year2, TRUE, TRUE);
+    $row['civicrm_contact_column4'] = $kpiHelper->getC5($this->year3, TRUE, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 

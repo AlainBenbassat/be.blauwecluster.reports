@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alain
- * Date: 12/04/19
- * Time: 13:09
- */
 
 class CRM_BlauweClusterKPI {
   /*
@@ -112,6 +106,7 @@ class CRM_BlauweClusterKPI {
 
     if ($justCount) {
       $sql = "$sqlMembers UNION $sqlCompanies UNION $sqlCollaborations";
+
       $dao = CRM_Core_DAO::executeQuery($sql);
       return $dao->N;
     }
@@ -133,26 +128,7 @@ class CRM_BlauweClusterKPI {
   /*
    * C2: aantal netwerkevents
    */
-  public function getC2($year) {
-    $sql = "
-      select
-        count(e.id)
-      from
-        civicrm_event e
-      inner join
-        civicrm_option_value et on e.event_type_id = et.value and et.option_group_id = 15
-      where
-        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
-      and
-        et.label = 'Netwerkevent' 
-    ";
-
-    $n = CRM_Core_DAO::singleValueQuery($sql);
-
-    return $n;
-  }
-
-  public function getC2Details($year) {
+  public function getC2($year, $justCount) {
     $sql = "
       select
         concat(DATE_FORMAT(start_date, '%d/%m/%Y'), ' - ', e.title) item
@@ -164,56 +140,28 @@ class CRM_BlauweClusterKPI {
         e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
       and
         et.label = 'Netwerkevent' 
-      order by
-        start_date
+      order by 
+        1
     ";
 
-    $dao = CRM_Core_DAO::executeQuery($sql);
-
-    return $dao;
+    if ($justCount) {
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao->N;
+    }
+    else {
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao;
+    }
   }
 
   /*
    * C3: aantal unieke ondernemingen (i.e. custom field = Privaat)
    * die deelgenomen hebben aan events (uitgezonderd WAR en RvB)
    */
-  public function getC3($year) {
+  public function getC3($year, $justCount) {
     $sql = "
       select
-        count(distinct c.id)
-      from
-        civicrm_event e
-      inner join
-        civicrm_option_value et on e.event_type_id = et.value and et.option_group_id = 15
-      inner join
-        civicrm_participant p on p.event_id = e.id
-      inner join 
-        civicrm_contact c on p.contact_id = c.id
-      inner join 
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
-      where
-        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
-      and
-        et.label not in('RvB', 'WAR') 
-      and 
-        p.status_id in (1, 2)
-      and
-        c.contact_type = 'Organization'
-      and 
-        ci.publiek_of_privaat__50 = 2
-      and 
-        c.is_deleted = 0
-    ";
-
-    $n = CRM_Core_DAO::singleValueQuery($sql);
-
-    return $n;
-  }
-
-  public function getC3Details($year) {
-    $sql = "
-      select        
-        concat(c.display_name, ' (', GROUP_CONCAT(e.title SEPARATOR ', '), ')') as item 
+        concat(c.display_name, ' (', GROUP_CONCAT(e.title SEPARATOR ', '), ')') as item
       from
         civicrm_event e
       inner join
@@ -238,16 +186,21 @@ class CRM_BlauweClusterKPI {
         c.is_deleted = 0
       group by 
         c.id
-      order by 
+      order by
         1
     ";
 
-    $dao = CRM_Core_DAO::executeQuery($sql);
-
-    return $dao;
+    if ($justCount) {
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao->N;
+    }
+    else {
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao;
+    }
   }
 
-  public function getC4($year, $detailsOrCount) {
+  public function getC4($year, $justCount) {
     $sql = "
       select 
         concat(DATE_FORMAT(cs.start_date, '%d/%m/%Y'), ' - ', cs.subject, ' (', GROUP_CONCAT(c.display_name SEPARATOR ', '), ')') as item
@@ -279,24 +232,27 @@ class CRM_BlauweClusterKPI {
         1              
     ";
 
-    if ($detailsOrCount == 'count') {
-      // return the number of records
-      $countSQL = "select count(*) from ($sql) as ctr";
-      $n = CRM_Core_DAO::singleValueQuery($countSQL);
-      return $n;
+    if ($justCount) {
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao->N;
     }
     else {
-      // return the details
       $dao = CRM_Core_DAO::executeQuery($sql);
       return $dao;
     }
-
   }
 
-  public function getC5($year, $detailsOrCount) {
+  public function getC5($year, $justCount, $c5Bis) {
+    if ($c5Bis) {
+      $bis = ' AND ci.grootte_27 in (1,2) ';
+    }
+    else {
+      $bis = ' ';
+    }
+
     $sql = "
       select 
-        concat(DATE_FORMAT(c.display_name, ' (', GROUP_CONCAT(cs.subject SEPARATOR ', '), ')') as item
+        concat(c.display_name, ' (', GROUP_CONCAT(cs.subject SEPARATOR ', '), ')') as item
       from
         civicrm_case cs
       inner join
@@ -314,7 +270,7 @@ class CRM_BlauweClusterKPI {
       and
         rt.label_a_b = 'Betrokken organisatie'
       and 
-        ci.publiek_of_privaat__50 = 2 
+        ci.publiek_of_privaat__50 = 2 $bis
       and 
         (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
       group by
@@ -325,14 +281,11 @@ class CRM_BlauweClusterKPI {
         c.sort_name              
     ";
 
-    if ($detailsOrCount == 'count') {
-      // return the number of records
-      $countSQL = "select count(*) from ($sql) as ctr";
-      $n = CRM_Core_DAO::singleValueQuery($countSQL);
-      return $n;
+    if ($justCount) {
+      $dao = CRM_Core_DAO::executeQuery($sql);
+      return $dao->N;
     }
     else {
-      // return the details
       $dao = CRM_Core_DAO::executeQuery($sql);
       return $dao;
     }
