@@ -102,7 +102,7 @@
     {$c3Contacts}
 </ul>
 <p><strong>Resultaat:</strong></p>
-<p>{$c3Total} evenementen</p>
+<p>{$c3Total} ondernemingen</p>
 
 <p>&nbsp</p>
 <h3>C-4. Aantal gegenereerde samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
