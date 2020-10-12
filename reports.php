@@ -4,18 +4,20 @@ require_once 'reports.civix.php';
 use CRM_Reports_ExtensionUtil as E;
 
 function reports_civicrm_summaryActions(&$actions, $contactID) {
-  // check if it's a paroisse
+  // make sure the contact is an organization
   if ($contactID > 0) {
     $sql = "select contact_type from civicrm_contact where id = $contactID";
     $contactType = CRM_Core_DAO::singleValueQuery($sql);
     if ($contactType == 'Organization') {
+      $config = CRM_Core_Config::singleton();
+
       // add link to info page
       $actions['otherActions']['bedrijfsprofiel'] = [
         'title' => 'Bedrijfsprofiel',
         'weight' => 999,
         'ref' => 'bedrijfsprofiel',
         'key' => 'bedrijfsprofiel',
-        'href' => '/bedrijfsprofiel_leden_details?id=' . $contactID,
+        'href' =>  $config->userFrameworkBaseURL . 'bedrijfsprofiel_leden_details?id=' . $contactID,
       ];
     }
   }
