@@ -205,35 +205,74 @@ class CRM_BlauweClusterKPI {
   public function getC4($year, $justCount) {
     $sql = "
       select
-        concat(DATE_FORMAT(cs.start_date, '%d/%m/%Y'), ' - ', cs.subject, ' (', GROUP_CONCAT(c.display_name SEPARATOR ', '), ')') as item
+        concat(
+          DATE_FORMAT(mcs.start_date, '%d/%m/%Y'),
+          ' - ',
+          mcs.subject,
+          ' (',
+          GROUP_CONCAT(mcs_contacts.display_name SEPARATOR ', '),
+          ')'
+        ) item
       from
-        civicrm_case cs
+        civicrm_case mcs
       inner join
-        civicrm_relationship r on r.case_id = cs.id
-      inner join
-        civicrm_relationship_type rt on r.relationship_type_id = rt.id
-      inner join
-        civicrm_contact c on c.id = r.contact_id_b
-      inner join
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
+      (
+        select
+          cs.id case_id,
+          c.id,
+          c.display_name,
+          ci.publiek_of_privaat__50,
+          ci.grootte_27
+        from
+          civicrm_case cs
+        inner join
+          civicrm_case_contact cc on cs.id = cc.case_id
+        inner join
+           civicrm_contact c on c.id = cc.contact_id
+        inner join
+          civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
+        where
+          c.is_deleted = 0
+        and
+          ci.publiek_of_privaat__50 = 2
+      union
+        select
+          r.case_id case_id,
+          c.id,
+          c.display_name,
+          ci.publiek_of_privaat__50,
+          ci.grootte_27
+        from
+          civicrm_relationship  r
+        inner join
+          civicrm_contact c on c.id = r.contact_id_b
+        inner join
+          civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
+        where
+          c.is_deleted = 0
+        and
+          ci.publiek_of_privaat__50 = 2
+        and
+          r.relationship_type_id = 19
+      ) mcs_contacts
+      on
+        mcs_contacts.case_id = mcs.id
       where
-        c.contact_type = 'Organization'
+        mcs.is_deleted = 0
       and
-        c.is_deleted = 0
+        year(mcs.start_date) <= $year
       and
-        cs.is_deleted = 0
-      and
-        rt.label_a_b = 'Betrokken organisatie'
-      and
-        ci.publiek_of_privaat__50 = 2
-      and
-        (year(cs.start_date) <= $year and year(ifnull(cs.end_date, '2999-12-31')) >= $year)
+        year(ifnull(mcs.end_date, '2999-12-31')) >= $year
       group by
-        cs.id
+        mcs.id,
+        mcs.subject,
+        mcs.start_date,
+        mcs.end_date,
+        mcs.status_id
       having
-        count(c.id) >= 3
+        count(mcs_contacts.id) >= 3
       order by
-        1
+        mcs.start_date
     ";
 
     if ($justCount) {
@@ -317,5 +356,6 @@ class CRM_BlauweClusterKPI {
       return $dao;
     }
   }
+
 
 }
