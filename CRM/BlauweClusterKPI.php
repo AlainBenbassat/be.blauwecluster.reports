@@ -6,11 +6,11 @@ class CRM_BlauweClusterKPI {
    */
   public function getC1($year, $section, $justCount = FALSE, $c1Bis = FALSE) {
     if ($justCount) {
-      $fields = 'c.display_name';
+      $fields = 'distinct c.display_name';
     }
     else {
       if ($section == 'members') {
-        $fields = 'c.display_name';
+        $fields = 'distinct c.display_name';
       }
       elseif ($section == 'collaborations') {
         // name of the company with it's cases
@@ -34,17 +34,17 @@ class CRM_BlauweClusterKPI {
         $fields as item
       from
         civicrm_contact c
-      inner join 
+      inner join
         civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
-      inner join 
-        civicrm_membership m on m.contact_id = c.id            
-      where 
+      inner join
+        civicrm_membership m on m.contact_id = c.id
+      where
         c.contact_type = 'Organization'
       and
         c.is_deleted = 0
-      and 
-        ci.publiek_of_privaat__50 = 2 $bis        
-      and 
+      and
+        ci.publiek_of_privaat__50 = 2 $bis
+      and
         year(m.start_date) <= $year and year(m.end_date) >= $year
     ";
 
@@ -53,20 +53,20 @@ class CRM_BlauweClusterKPI {
         $fields as item
       from
         civicrm_contact c
-      inner join 
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+      inner join
+        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
       inner join
         civicrm_participant p on p.contact_id = c.id
-      inner join 
+      inner join
         civicrm_event e on e.id = p.event_id
-      where 
+      where
         c.contact_type = 'Organization'
       and
         c.is_deleted = 0
       and
         year(e.start_date) = $year
       and
-        p.status_id in (1, 2)  
+        p.status_id in (1, 2)
       and
         ci.publiek_of_privaat__50 = 2 $bis
       group by
@@ -76,32 +76,32 @@ class CRM_BlauweClusterKPI {
     ";
 
     $sqlCollaborations = "
-      select 
+      select
         $fields as item
       from
         civicrm_case cs
       inner join
         civicrm_relationship r on r.case_id = cs.id
-      inner join 
+      inner join
         civicrm_relationship_type rt on r.relationship_type_id = rt.id
-      inner join 
-        civicrm_contact c on c.id = r.contact_id_b 
-      inner join 
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+      inner join
+        civicrm_contact c on c.id = r.contact_id_b
+      inner join
+        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
       where
         c.contact_type = 'Organization'
       and
         c.is_deleted = 0
       and
-        cs.is_deleted = 0  
+        cs.is_deleted = 0
       and
         rt.label_a_b = 'Betrokken organisatie'
-      and 
+      and
         ci.publiek_of_privaat__50 = 2 $bis
-      and 
+      and
         year(cs.start_date) <= $year and ifnull(year(cs.end_date), 3000) >= $year
-      and 
-        cs.case_type_id in (3, 4, 5) 
+      and
+        cs.case_type_id in (3, 4, 5)
       group by
         c.id
     ";
@@ -139,10 +139,10 @@ class CRM_BlauweClusterKPI {
       inner join
         civicrm_option_value et on e.event_type_id = et.value and et.option_group_id = 15
       where
-        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
+        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'
       and
-        et.label = 'Netwerkevent' 
-      order by 
+        et.label = 'Netwerkevent'
+      order by
         1
     ";
 
@@ -170,23 +170,23 @@ class CRM_BlauweClusterKPI {
         civicrm_option_value et on e.event_type_id = et.value and et.option_group_id = 15
       inner join
         civicrm_participant p on p.event_id = e.id
-      inner join 
+      inner join
         civicrm_contact c on p.contact_id = c.id
-      inner join 
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+      inner join
+        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
       where
-        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'      
+        e.start_date between '$year-01-01 00:00:00' and '$year-12-31 23:59:59'
       and
-        et.label not in('RvB', 'WAR') 
-      and 
+        et.label not in('RvB', 'WAR')
+      and
         p.status_id in (1, 2)
       and
         c.contact_type = 'Organization'
-      and 
+      and
         ci.publiek_of_privaat__50 = 2
-      and 
+      and
         c.is_deleted = 0
-      group by 
+      group by
         c.id
       order by
         1
@@ -204,18 +204,18 @@ class CRM_BlauweClusterKPI {
 
   public function getC4($year, $justCount) {
     $sql = "
-      select 
+      select
         concat(DATE_FORMAT(cs.start_date, '%d/%m/%Y'), ' - ', cs.subject, ' (', GROUP_CONCAT(c.display_name SEPARATOR ', '), ')') as item
       from
         civicrm_case cs
       inner join
         civicrm_relationship r on r.case_id = cs.id
-      inner join 
+      inner join
         civicrm_relationship_type rt on r.relationship_type_id = rt.id
-      inner join 
-        civicrm_contact c on c.id = r.contact_id_b 
-      inner join 
-        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+      inner join
+        civicrm_contact c on c.id = r.contact_id_b
+      inner join
+        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
       where
         c.contact_type = 'Organization'
       and
@@ -224,16 +224,16 @@ class CRM_BlauweClusterKPI {
         cs.is_deleted = 0
       and
         rt.label_a_b = 'Betrokken organisatie'
-      and 
-        ci.publiek_of_privaat__50 = 2 
-      and 
-        (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
+      and
+        ci.publiek_of_privaat__50 = 2
+      and
+        (year(cs.start_date) <= $year and year(ifnull(cs.end_date, '2999-12-31')) >= $year)
       group by
         cs.id
       having
         count(c.id) >= 3
       order by
-        1              
+        1
     ";
 
     if ($justCount) {
@@ -257,38 +257,38 @@ class CRM_BlauweClusterKPI {
     }
 
     $sql = "
-      select 
+      select
         distinct cc.display_name item
-      from 
+      from
         civicrm_contact cc
-      inner join 
-        civicrm_value_organisatie_i_5 cci on cc.id = cci.entity_id 
+      inner join
+        civicrm_value_organisatie_i_5 cci on cc.id = cci.entity_id
       inner join
         civicrm_relationship cr on cr.contact_id_b = cc.id
-      inner join 
-        civicrm_relationship_type crt on cr.relationship_type_id = crt.id  
+      inner join
+        civicrm_relationship_type crt on cr.relationship_type_id = crt.id
       where
         cc.contact_type = 'Organization'
       and
         cc.is_deleted = 0
       and
         crt.label_a_b = 'Betrokken organisatie'
-      and 
-        cci.publiek_of_privaat__50 = 2 $bis2 
       and
-        cr.case_id in ( 
-          select         
+        cci.publiek_of_privaat__50 = 2 $bis2
+      and
+        cr.case_id in (
+          select
             cs.id
           from
             civicrm_case cs
           inner join
             civicrm_relationship r on r.case_id = cs.id
-          inner join 
+          inner join
             civicrm_relationship_type rt on r.relationship_type_id = rt.id
-          inner join 
-            civicrm_contact c on c.id = r.contact_id_b 
-          inner join 
-            civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id 
+          inner join
+            civicrm_contact c on c.id = r.contact_id_b
+          inner join
+            civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
           where
             c.contact_type = 'Organization'
           and
@@ -297,13 +297,13 @@ class CRM_BlauweClusterKPI {
             cs.is_deleted = 0
           and
             rt.label_a_b = 'Betrokken organisatie'
-          and 
+          and
             ci.publiek_of_privaat__50 = 2 $bis
-          and 
-            (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1)) 
-          group by 
+          and
+            (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1))
+          group by
             cs.id
-          having 
+          having
             count(c.id) >= 3
         )
     ";
