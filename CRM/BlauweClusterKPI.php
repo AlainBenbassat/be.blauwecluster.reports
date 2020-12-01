@@ -205,6 +205,9 @@ class CRM_BlauweClusterKPI {
   public function getC4($year, $justCount) {
     $sql = "
       select
+        mcs.id case_id,
+        mcs.subject,
+        group_concat(mcs_contacts.id SEPARATOR ', ') org_ids,
         concat(
           DATE_FORMAT(mcs.start_date, '%d/%m/%Y'),
           ' - ',
@@ -287,64 +290,35 @@ class CRM_BlauweClusterKPI {
 
   public function getC5($year, $justCount, $c5Bis) {
     if ($c5Bis) {
-      $bis = ' AND ci.grootte_27 in (1,2) ';
-      $bis2 = ' AND cci.grootte_27 in (1,2) ';
+      $enkelKMOs = ' AND ci.grootte_27 in (1,2) ';
     }
     else {
-      $bis = ' ';
-      $bis2 = ' ';
+      $enkelKMOs = ' ';
     }
 
+    // get the contact id's from the C4 query
+    $contactIds = [];
+    $dao = $this->getC4($year, FALSE);
+    while ($dao->fetch()) {
+      $contactIds[] = $dao->org_ids;
+    }
+
+    // build the SQL statement
+    $ids = implode(',', $contactIds);
     $sql = "
-      select
-        distinct cc.display_name item
-      from
-        civicrm_contact cc
+      SELECT
+        c.display_name item
+      FROM
+        civicrm_contact c
       inner join
-        civicrm_value_organisatie_i_5 cci on cc.id = cci.entity_id
-      inner join
-        civicrm_relationship cr on cr.contact_id_b = cc.id
-      inner join
-        civicrm_relationship_type crt on cr.relationship_type_id = crt.id
-      where
-        cc.contact_type = 'Organization'
+        civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
+      WHERE
+        c.id in ($ids)
       and
-        cc.is_deleted = 0
-      and
-        crt.label_a_b = 'Betrokken organisatie'
-      and
-        cci.publiek_of_privaat__50 = 2 $bis2
-      and
-        cr.case_id in (
-          select
-            cs.id
-          from
-            civicrm_case cs
-          inner join
-            civicrm_relationship r on r.case_id = cs.id
-          inner join
-            civicrm_relationship_type rt on r.relationship_type_id = rt.id
-          inner join
-            civicrm_contact c on c.id = r.contact_id_b
-          inner join
-            civicrm_value_organisatie_i_5 ci on c.id = ci.entity_id
-          where
-            c.contact_type = 'Organization'
-          and
-            c.is_deleted = 0
-          and
-            cs.is_deleted = 0
-          and
-            rt.label_a_b = 'Betrokken organisatie'
-          and
-            ci.publiek_of_privaat__50 = 2 $bis
-          and
-            (year(cs.start_date) = $year or (year(cs.start_date) <= $year and cs.status_id = 1))
-          group by
-            cs.id
-          having
-            count(c.id) >= 3
-        )
+        ci.publiek_of_privaat__50 = 2
+      $enkelKMOs
+      order by
+        c.sort_name
     ";
 
     if ($justCount) {
@@ -356,6 +330,4 @@ class CRM_BlauweClusterKPI {
       return $dao;
     }
   }
-
-
 }

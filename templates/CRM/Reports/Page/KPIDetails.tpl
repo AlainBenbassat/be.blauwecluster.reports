@@ -105,7 +105,7 @@
 <p>{$c3Total} ondernemingen</p>
 
 <p>&nbsp</p>
-<h3>C-4. Aantal gegenereerde samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
+<h3>C-4. Aantal lopende samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
 <p><strong>Definitie</strong></p>
 <p>Aantal lopende samenwerkingsinitiatieven (incl. geoormerkte projecten) onder de vorm van gezamenlijke marktanalyses, operationele samenwerkingscontracten, onderzoeks-, innovatie-, demonstratieprojecten... met minstens drie ondernemingen.</p>
 <p><strong>Samenwerkingsinitiatieven:</strong></p>
