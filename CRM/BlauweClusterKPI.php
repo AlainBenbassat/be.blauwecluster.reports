@@ -14,7 +14,7 @@ class CRM_BlauweClusterKPI {
       }
       elseif ($section == 'collaborations') {
         // name of the company with it's cases
-        $fields = "concat(c.display_name, ' (', GROUP_CONCAT(cs.subject SEPARATOR ', '), ')')";
+        $fields = "concat(c.display_name, ' (', GROUP_CONCAT(distinct cs.subject SEPARATOR ', '), ')')";
       }
       else {
         // name of the company with it's events
