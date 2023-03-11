@@ -2,7 +2,7 @@
 <extension key="be.blauwecluster.reports" type="module">
   <file>reports</file>
   <name>Custom Rapporten Blauwe Cluster</name>
-  <description></description>
+  <description/>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Alain Benbassat</author>
@@ -20,5 +20,13 @@
   <comments>custom rapporten blauwe cluster</comments>
   <civix>
     <namespace>CRM/Reports</namespace>
+    <format>22.10.0</format>
   </civix>
+  <mixins>
+    <mixin>menu-xml@1.0.0</mixin>
+    <mixin>mgd-php@1.0.0</mixin>
+  </mixins>
+  <classloader>
+    <psr0 prefix="CRM_" path="."/>
+  </classloader>
 </extension>
