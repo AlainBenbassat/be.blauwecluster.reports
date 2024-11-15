@@ -11,7 +11,7 @@ return array (
     'params' =>
     array (
       'version' => 3,
-      'label' => 'KPI 2021-2022-2023',
+      'label' => 'KPI 2021-2022-2023-2024',
       'description' => 'KPI 2021-2022-2023 (be.blauwecluster.reports)',
       'class_name' => 'CRM_Reports_Form_Report_KPI2021',
       'report_url' => 'be.blauwecluster.reports/kpi2021',
