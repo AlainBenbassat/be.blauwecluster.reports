@@ -5,10 +5,12 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
   private $year1 = 2021;
   private $year2;
   private $year3;
+  private $year4;
 
   public function __construct() {
     $this->year2 = $this->year1 + 1;
     $this->year3 = $this->year1 + 2;
+    $this->year4 = $this->year1 + 3;
 
     $this->_columns = [
       'civicrm_contact' => [
@@ -37,6 +39,12 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
             'type' => CRM_Utils_Type::T_INT,
           ],
           'column5' => [
+            'title' => $this->year4,
+            'required' => TRUE,
+            'dbAlias' => '1',
+            'type' => CRM_Utils_Type::T_INT,
+          ],
+          'column6' => [
             'title' => 'Cumulatief / Gemiddeld',
             'required' => TRUE,
             'dbAlias' => '1',
@@ -53,7 +61,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
 
     // hyperlinks to KPI detail page
     $linksToDetailsPage = 'Bekijk de details: ';
-    $years = [$this->year1, $this->year2, $this->year3];
+    $years = [$this->year1, $this->year2, $this->year3, $this->year4];
     foreach ($years as $year) {
       $url = CRM_Utils_System::url('civicrm/kpi-details', 'reset=1&year=' . $year);
       $link = '<a href="' . $url . '">' . $year . '</a>';
@@ -138,6 +146,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
     $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $rows[] = $row;
 
     $row = [];
@@ -145,6 +154,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, 'EUR');
     $rows[] = $row;
 
@@ -153,6 +164,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, 'EUR');
     $rows[] = $row;
 
@@ -161,6 +174,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -169,6 +184,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -181,6 +198,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
     $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $rows[] = $row;
 
     $row = [];
@@ -188,6 +206,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = $kpiHelper->getC1($this->year1, 'all', TRUE, FALSE);
     $row['civicrm_contact_column3'] = $kpiHelper->getC1($this->year2, 'all', TRUE, FALSE);
     $row['civicrm_contact_column4'] = $kpiHelper->getC1($this->year3, 'all', TRUE, FALSE);
+    $row['civicrm_contact_column5'] = $kpiHelper->getC1($this->year4, 'all', TRUE, FALSE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -196,6 +215,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = $kpiHelper->getC1($this->year1, 'all', TRUE, TRUE);
     $row['civicrm_contact_column3'] = $kpiHelper->getC1($this->year2, 'all', TRUE, TRUE);
     $row['civicrm_contact_column4'] = $kpiHelper->getC1($this->year3, 'all', TRUE, TRUE);
+    $row['civicrm_contact_column5'] = $kpiHelper->getC1($this->year4, 'all', TRUE, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -204,6 +224,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = $kpiHelper->getC2($this->year1, TRUE);
     $row['civicrm_contact_column3'] = $kpiHelper->getC2($this->year2, TRUE);
     $row['civicrm_contact_column4'] = $kpiHelper->getC2($this->year3, TRUE);
+    $row['civicrm_contact_column5'] = $kpiHelper->getC2($this->year4, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -212,6 +233,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = $kpiHelper->getC3($this->year1, TRUE);
     $row['civicrm_contact_column3'] = $kpiHelper->getC3($this->year2, TRUE);
     $row['civicrm_contact_column4'] = $kpiHelper->getC3($this->year3, TRUE);
+    $row['civicrm_contact_column5'] = $kpiHelper->getC3($this->year4, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -220,6 +242,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = $kpiHelper->getC4($this->year1, TRUE);
     $row['civicrm_contact_column3'] = $kpiHelper->getC4($this->year2, TRUE);
     $row['civicrm_contact_column4'] = $kpiHelper->getC4($this->year3, TRUE);
+    $row['civicrm_contact_column5'] = $kpiHelper->getC4($this->year4, TRUE);
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -228,9 +251,11 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $c5y1 = $kpiHelper->getC5($this->year1, TRUE, FALSE);
     $c5y2 = $kpiHelper->getC5($this->year2, TRUE, FALSE);
     $c5y3 = $kpiHelper->getC5($this->year3, TRUE, FALSE);
+    $c5y4 = $kpiHelper->getC5($this->year4, TRUE, FALSE);
     $row['civicrm_contact_column2'] = $c5y1;
     $row['civicrm_contact_column3'] = $c5y2;
     $row['civicrm_contact_column4'] = $c5y3;
+    $row['civicrm_contact_column5'] = $c5y4;
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -239,6 +264,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = round($kpiHelper->getC5($this->year1, TRUE, TRUE) / $c5y1 * 100) . '%';
     $row['civicrm_contact_column3'] = round($kpiHelper->getC5($this->year2, TRUE, TRUE) / $c5y2 * 100) . '%';
     $row['civicrm_contact_column4'] = round($kpiHelper->getC5($this->year3, TRUE, TRUE) / $c5y3 * 100) . '%';
+    $row['civicrm_contact_column5'] = round($kpiHelper->getC5($this->year3, TRUE, TRUE) / $c5y4 * 100) . '%';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -247,6 +273,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -259,6 +287,7 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
     $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $rows[] = $row;
 
     $row = [];
@@ -266,6 +295,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $rows[] = $row;
 
     $row = [];
@@ -273,6 +304,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -281,6 +314,8 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $row['civicrm_contact_column2'] = '';
     $row['civicrm_contact_column3'] = '';
     $row['civicrm_contact_column4'] = '';
+    $row['civicrm_contact_column5'] = '';
+    $row['civicrm_contact_column6'] = '';
     $this->rowPostProcess($row, '');
     $rows[] = $row;
 
@@ -305,14 +340,15 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
     $val1 = $row['civicrm_contact_column2'];
     $val2 = $row['civicrm_contact_column3'];
     $val3 = $row['civicrm_contact_column4'];
+    $val4 = $row['civicrm_contact_column5'];
 
     // calculate sum and average for numeric values
     if (is_numeric($val1) && is_numeric($val2) && is_numeric($val3)) {
       // calculate sum
-      $valSum = $val1 + $val2 + $val3;
+      $valSum = $val1 + $val2 + $val3 + $val4;
 
       // calculate average
-      $valAvg = round($valSum / 3, 2);
+      $valAvg = round($valSum / 4, 2);
     }
 
     // add unit to all row values
@@ -320,13 +356,14 @@ class CRM_Reports_Form_Report_KPI2021 extends CRM_Report_Form {
       $row['civicrm_contact_column2'] .= $row['civicrm_contact_column2'] . ' ' . $unit;
       $row['civicrm_contact_column3'] .= $row['civicrm_contact_column3'] . ' ' . $unit;
       $row['civicrm_contact_column4'] .= $row['civicrm_contact_column4'] . ' ' . $unit;
+      $row['civicrm_contact_column5'] .= $row['civicrm_contact_column4'] . ' ' . $unit;
 
       $valSum .= ' ' . $unit;
       $valAvg .= ' ' . $unit;
     }
 
-    // fill in column 5
-    $row['civicrm_contact_column5'] = "$valSum / $valAvg";
+    // fill in column 6
+    $row['civicrm_contact_column6'] = "$valSum / $valAvg";
   }
 
 
