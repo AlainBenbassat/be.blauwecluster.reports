@@ -90,20 +90,42 @@ class CRM_BlauweClusterKPI2025 {
       ->addWhere('end_date', '>=', "$year-01-01")
       ->addWhere('membership_type_id:label', 'IN', ['Premium', 'Strategisch', 'Standaard', 'Verkennend'])
       ->addWhere('owner_membership_id', 'IS NULL')
+      ->addOrderBy('contact_id.sort_name', 'ASC')
       ->execute();
 
     if ($justCount) {
       return $memberships->countMatched();
     }
 
-    //foreach ($memberships as $membership) {
-      // do something
-    //}
-    return 999;
+    $listItems = '';
+    foreach ($memberships as $membership) {
+       $listItems .= '<li>' . $membership['contact_id.display_name'] . ' (' . $membership['membership_type_id:label'] . ' lid van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')</li>';
+    }
 
+    return [$memberships->countMatched(), $listItems];
   }
 
-  public function getDBC2() {
+  public function getDBC2(int $year, bool $justCount = TRUE) {
+    $memberships = \Civi\Api4\Membership::get(FALSE)
+      ->selectRowCount()
+      ->addSelect('contact_id.display_name', 'start_date', 'end_date', 'membership_type_id:label')
+      ->addWhere('start_date', '<=', "$year-12-31")
+      ->addWhere('end_date', '>=', "$year-01-01")
+      ->addWhere('membership_type_id:label', 'IN', ['Geassocieerd lid - Partner', 'Geassocieerd lid - Niet-partner'])
+      ->addWhere('owner_membership_id', 'IS NULL')
+      ->addOrderBy('contact_id.sort_name', 'ASC')
+      ->execute();
+
+    if ($justCount) {
+      return $memberships->countMatched();
+    }
+
+    $listItems = '';
+    foreach ($memberships as $membership) {
+      $listItems .= '<li>' . $membership['contact_id.display_name'] . ' (' . $membership['membership_type_id:label'] . ' lid van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')</li>';
+    }
+
+    return [$memberships->countMatched(), $listItems];
   }
 
   public function getDBC3() {

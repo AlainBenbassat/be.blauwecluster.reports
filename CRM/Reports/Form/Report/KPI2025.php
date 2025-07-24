@@ -66,7 +66,7 @@ class CRM_Reports_Form_Report_KPI2025 extends CRM_Report_Form {
     $linksToDetailsPage = 'Bekijk de details: ';
     $years = [$this->year1, $this->year2, $this->year3];
     foreach ($years as $year) {
-      $url = CRM_Utils_System::url('civicrm/kpi-details', 'reset=1&year=' . $year);
+      $url = CRM_Utils_System::url('civicrm/kpi-details-2025', 'reset=1&year=' . $year);
       $link = '<a href="' . $url . '">' . $year . '</a>';
 
       if ($year == $this->year1) {

@@ -6,4 +6,10 @@
     <title>KPIDetails</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/kpi-details-2025</path>
+    <page_callback>CRM_Reports_Page_KPIDetails2025</page_callback>
+    <title>KPIDetails2025</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
