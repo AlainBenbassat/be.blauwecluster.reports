@@ -24,6 +24,10 @@ class CRM_Reports_Page_KPIDetails2025 extends CRM_Core_Page {
     $this->assign('dbc2Members', $items);
     $this->assign('dbc2MembersTotal', $total);
 
+    [$total, $items] = $kpiHelper->getDBC3($year, FALSE);
+    $this->assign('dbc3Actors', $items);
+    $this->assign('dbc3ActorsTotal', $total);
+
     parent::run();
   }
 

@@ -99,21 +99,21 @@ class CRM_Reports_Form_Report_KPI2025 extends CRM_Report_Form {
 
     $rows = [];
 
-    $rows[] = $kpiHelper->getRowDBC1();
-    $rows[] = $kpiHelper->getRowDBC2();
-    $rows[] = $kpiHelper->getRowDBC3();
-    $rows[] = $kpiHelper->getRowCPI1();
-    $rows[] = $kpiHelper->getRowCPI2();
-    $rows[] = $kpiHelper->getRowCPI3();
-    $rows[] = $kpiHelper->getRowCPI4();
-    $rows[] = $kpiHelper->getRowCPI5();
-    $rows[] = $kpiHelper->getRowCPI6();
-    $rows[] = $kpiHelper->getRowCPI7();
-    $rows[] = $kpiHelper->getRowCPI7Bis();
-    $rows[] = $kpiHelper->getRowCPI8();
-    $rows[] = $kpiHelper->getRowCPI9();
-    $rows[] = $kpiHelper->getRowCPI10();
-    $rows[] = $kpiHelper->getRowCPI11();
+    $rows[] = $kpiHelper->getKpiRow('DBC1');
+    $rows[] = $kpiHelper->getKpiRow('DBC2');
+    $rows[] = $kpiHelper->getKpiRow('DBC3');
+    $rows[] = $kpiHelper->getKpiRow('CPI1');
+    $rows[] = $kpiHelper->getKpiRow('CPI2');
+    $rows[] = $kpiHelper->getKpiRow('CPI3');
+    $rows[] = $kpiHelper->getKpiRow('CPI4');
+    $rows[] = $kpiHelper->getKpiRow('CPI5');
+    $rows[] = $kpiHelper->getKpiRow('CPI6');
+    $rows[] = $kpiHelper->getKpiRow('CPI7');
+    $rows[] = $kpiHelper->getKpiRow('CPI7Bis');
+    $rows[] = $kpiHelper->getKpiRow('CPI8');
+    $rows[] = $kpiHelper->getKpiRow('CPI9');
+    $rows[] = $kpiHelper->getKpiRow('CPI10');
+    $rows[] = $kpiHelper->getKpiRow('CPI11');
 
   }
 
