@@ -32,3 +32,15 @@
   {$dbc3Actors}
 </ul>
 <p>Aantal: {$dbc3ActorsTotal}</p>
+
+<h3>CPI 1. Aantal actieve actoren binnen de cluster</h3>
+<p><strong>Definitie</strong></p>
+<p>Een actor wordt als actief beschouwd wanneer het ofwel:<br>
+  (1) Deelgenomen heeft aan ten minste één innovatief clusterproject in het kalenderjaar; of<br>
+  (2) Deelgenomen heeft aan ten minste 2 (andere) clusterinitiatieven (incl. workshop, evenementen, pilot) die betrekking hebben op innovatie in het kalenderjaar.</p>
+<p><strong>Actieve actoren binnen de cluster</strong></p>
+<ul>
+  {$cpi1Actors}
+</ul>
+<p>Aantal: {$cpi1ActorsTotal}</p>
+

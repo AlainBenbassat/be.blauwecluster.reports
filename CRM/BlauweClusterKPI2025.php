@@ -94,30 +94,18 @@ class CRM_BlauweClusterKPI2025 {
     $actorsNietLid = $this->getActorsNietLid($year);
 
     $actors = array_merge($actorsBetalendLidbedrijf, $actorsKennisinstelling, $actorsNietLid);
-    foreach ($actors as $actorId => $actorName) {
-      $paidEvents = $this->getPaidEventParticipation($year, $actorId);
-      if ($paidEvents) {
-        $result[] = $actorName . ' (Deelgenomen aan betalende evenementen: ' . implode(', ', $paidEvents) . ')';
-      }
-      else {
-        $freeEvents = $this->getFreeEventParticipation($year, $actorId);
-        if (count($freeEvents) >= 2) {
-          $result[] = $actorName . ' (Deelgenomen aan gratis evenementen: ' . implode(', ', $freeEvents) . ')';
-        }
-      }
-    }
 
     if ($justCount) {
-      return count($result);
+      return count($actors);
     }
 
     $listItems = '';
-    sort($result);
-    foreach ($result as $actor) {
+    sort($actors);
+    foreach ($actors as $actor) {
       $listItems .= '<li>' . $actor . '</li>';
     }
 
-    return [count($result), $listItems];
+    return [count($actors), $listItems];
   }
 
   public function getCPI1(int $year, bool $justCount = TRUE) {
@@ -160,11 +148,17 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   private function getActorsBetalendLidbedrijf(int $year): array {
+    static $cachedList = null;
+
+    if (!empty($cachedList)) {
+      return $cachedList;
+    }
+
     $memberships = \Civi\Api4\Membership::get(FALSE)
       ->addSelect('contact_id', 'contact_id.display_name', 'start_date', 'end_date', 'membership_type_id:label')
       ->addWhere('start_date', '<=', "$year-12-31")
       ->addWhere('end_date', '>=', "$year-01-01")
-      ->addWhere('membership_type_id:label', 'IN', ['Premium', 'Strategisch', 'Standaard', 'Verkennend', 'Geassocieerd lid - Partner'])
+      ->addWhere('membership_type_id:label', 'IN', ['Premium', 'Strategisch', 'Standaard', 'Verkennend', 'Dochter van premium of strategisch lid'])
       ->addWhere('owner_membership_id', 'IS NULL')
       ->execute();
 
@@ -173,26 +167,44 @@ class CRM_BlauweClusterKPI2025 {
       $list[$membership['contact_id']] = $membership['contact_id.display_name'];
     }
 
+    $cachedList = $list;
     return $list;
   }
 
   private function getActorsKennisinstelling(int $year): array {
-    $contacts = \Civi\Api4\Contact::get(FALSE)
-      ->addSelect('id', 'display_name')
-      ->addJoin('EntityTag AS entity_tag', 'INNER', ['entity_tag.entity_table', '=', '"civicrm_contact"'], ['entity_tag.entity_id', '=', 'id'])
-      ->addJoin('Tag AS tag', 'INNER', ['entity_tag.tag_id', '=', 'tag.id'], ['tag.label', '=', '"Kennisinstelling"'])
-      ->addWhere('contact_type', '=', 'Organization')
+    static $cachedList = null;
+
+    if (!empty($cachedList)) {
+      return $cachedList;
+    }
+
+    $memberships = \Civi\Api4\Membership::get(FALSE)
+      ->addSelect('contact_id', 'contact_id.display_name')
+      ->addJoin('EntityTag AS entity_tag', 'INNER', ['contact_id', '=', 'entity_tag.entity_id'], ['entity_tag.entity_table', '=', "'civicrm_contact'"])
+      ->addJoin('Tag AS tag', 'INNER', ['entity_tag.tag_id', '=', 'tag.id'])
+      ->addWhere('start_date', '<=', "$year-12-31")
+      ->addWhere('end_date', '>=', "$year-01-01")
+      ->addWhere('membership_type_id:label', '=', 'Geassocieerd lid - Partner')
+      ->addWhere('owner_membership_id', 'IS NULL')
+      ->addWhere('tag.label', '=', 'Research & Development')
       ->execute();
 
     $list = [];
-    foreach ($contacts as $contact) {
-      $list[$contact['id']] = $contact['display_name'];
+    foreach ($memberships as $membership) {
+      $list[$memberships['contact_id']] = $memberships['contact_id.display_name'];
     }
 
+    $cachedList = $list;
     return $list;
   }
 
   private function getActorsNietLid(int $year): array {
+    static $cachedList = null;
+
+    if (!empty($cachedList)) {
+      return $cachedList;
+    }
+
     $sql = "
       select
         c.id,
@@ -213,13 +225,14 @@ class CRM_BlauweClusterKPI2025 {
       $list[$dao->id] = $dao->display_name;
     }
 
+    $cachedList = $list;
     return $list;
   }
 
   private function getPaidEventParticipation(int $year, int $actorId): array {
     $participants = \Civi\Api4\Participant::get(FALSE)
       ->addSelect('event_id.title')
-      ->addWhere('Kosten_organisatie.Betalend_', '=', TRUE)
+      ->addWhere('Kosten.Betalend_', '=', TRUE)
       ->addWhere('contact_id', '=', $actorId)
       ->addWhere('event_id.start_date', '>=', "$year-01-01 00:06:00")
       ->addWhere('event_id.start_date', '<=', "$year-12-31 23:59:00")
@@ -237,7 +250,7 @@ class CRM_BlauweClusterKPI2025 {
   private function getFreeEventParticipation(int $year, int $actorId): array {
     $participants = \Civi\Api4\Participant::get(FALSE)
       ->addSelect('event_id.title')
-      ->addWhere('Kosten_organisatie.Betalend_', '=', FALSE)
+      ->addWhere('Kosten.Betalend_', '=', FALSE)
       ->addWhere('contact_id', '=', $actorId)
       ->addWhere('event_id.start_date', '>=', "$year-01-01 00:06:00")
       ->addWhere('event_id.start_date', '<=', "$year-12-31 23:59:00")
