@@ -93,20 +93,13 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   public function getDBC3(int $year, bool $justCount = TRUE) {
-    $result = [];
-
-    $actorsBetalendLidbedrijf = $this->getActorsBetalendLidbedrijf($year);
-    $actorsKennisinstelling = $this->getActorsKennisinstelling($year);
-    $actorsNietLid = $this->getActorsNietLid($year);
-
-    $actors = array_merge($actorsBetalendLidbedrijf, $actorsKennisinstelling, $actorsNietLid);
+    $actors = $this->getActors($year, TRUE);
 
     if ($justCount) {
       return count($actors);
     }
 
     $listItems = '';
-    sort($actors);
     foreach ($actors as $actor) {
       $listItems .= '<li>' . $actor . '</li>';
     }
@@ -114,7 +107,33 @@ class CRM_BlauweClusterKPI2025 {
     return [count($actors), $listItems];
   }
 
-  public function getCPI1(int $year, bool $justCount = TRUE) {}
+  public function getCPI1(int $year, bool $justCount = TRUE) {
+    $activeActors = [];
+    $actors = $this->getActors($year, FALSE);
+
+    foreach ($actors as $actorId => $actor) {
+      $projects = $this->getClusterProjects($actorId, $year);
+      $otherProjects = $this->getOtherProjects($actorId, $year);
+      $events = $this->getAtLeastTwoEvents($actorId, $year);
+
+      $details = $this->formatCpi1Details($projects, $otherProjects, $events);
+
+      if ($details) {
+        $activeActors[] = $actor . $details;
+      }
+    }
+
+    if ($justCount) {
+      return count($activeActors);
+    }
+
+    $listItems = '';
+    foreach ($activeActors as $actor) {
+      $listItems .= '<li>' . $actor . '</li>';
+    }
+
+    return [count($activeActors), $listItems];
+  }
 
   public function getCPI2(int $year, bool $justCount = TRUE) {}
 
@@ -144,13 +163,25 @@ class CRM_BlauweClusterKPI2025 {
     return 'monitoring';
   }
 
-  private function getActorsBetalendLidbedrijf(int $year): array {
+  private function getActors(int $year, bool $addDetails): array {
     static $cachedList = NULL;
 
     if (!empty($cachedList)) {
       return $cachedList;
     }
 
+    $actorsBetalendLidbedrijf = $this->getActorsBetalendLidbedrijf($year, $addDetails);
+    $actorsKennisinstelling = $this->getActorsKennisinstelling($year, $addDetails);
+    $actorsNietLid = $this->getActorsNietLid($year, $addDetails);
+
+    $actors = array_merge($actorsBetalendLidbedrijf, $actorsKennisinstelling, $actorsNietLid);
+    natcasesort($actors);
+
+    //$cachedList = $actors;
+    return $actors;
+  }
+
+  private function getActorsBetalendLidbedrijf(int $year, bool $addDetails): array {
     $memberships = \Civi\Api4\Membership::get(FALSE)
       ->addSelect('contact_id', 'contact_id.display_name', 'start_date', 'end_date', 'membership_type_id:label')
       ->addWhere('start_date', '<=', "$year-12-31")
@@ -167,20 +198,18 @@ class CRM_BlauweClusterKPI2025 {
 
     $list = [];
     foreach ($memberships as $membership) {
-      $list[$membership['contact_id']] = $membership['contact_id.display_name'] . ' (' . $membership['membership_type_id:label'] . ' lid van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')';
+      if ($addDetails) {
+        $list[$membership['contact_id']] = $membership['contact_id.display_name'] . ' (' . $membership['membership_type_id:label'] . ' lid van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')';
+      }
+      else {
+        $list[$membership['contact_id']] = $membership['contact_id.display_name'];
+      }
     }
 
-    $cachedList = $list;
     return $list;
   }
 
-  private function getActorsKennisinstelling(int $year): array {
-    static $cachedList = NULL;
-
-    if (!empty($cachedList)) {
-      return $cachedList;
-    }
-
+  private function getActorsKennisinstelling(int $year, bool $addDetails): array {
     $tagIdResearchAndDevelopment = 22;
     $contacts = \Civi\Api4\Contact::get(FALSE)
       ->addSelect('id', 'display_name', 'membership.membership_type_id:label', 'membership.start_date', 'membership.end_date')
@@ -207,20 +236,18 @@ class CRM_BlauweClusterKPI2025 {
 
     $list = [];
     foreach ($contacts as $contact) {
-      $list[$contact['id']] = $contact['display_name'] . ' (Kenmerk Research & Development + ' . $contact['membership.membership_type_id:label'] . ' van/tot: ' . $contact['membership.start_date'] . ' - ' . $contact['membership.end_date'] . ')';
+      if ($addDetails) {
+        $list[$contact['id']] = $contact['display_name'] . ' (Kenmerk Research & Development + ' . $contact['membership.membership_type_id:label'] . ' van/tot: ' . $contact['membership.start_date'] . ' - ' . $contact['membership.end_date'] . ')';
+      }
+      else {
+        $list[$contact['id']] = $contact['display_name'];
+      }
     }
 
-    $cachedList = $list;
     return $list;
   }
 
-  private function getActorsNietLid(int $year): array {
-    static $cachedList = NULL;
-
-    if (!empty($cachedList)) {
-      return $cachedList;
-    }
-
+  private function getActorsNietLid(int $year, bool $addDetails): array {
     $sql = "
       select
         c.id,
@@ -257,11 +284,131 @@ class CRM_BlauweClusterKPI2025 {
 
     $list = [];
     while ($dao->fetch()) {
-      $list[$dao->id] = $dao->display_name . ' (Geen lid - aantal evenementen: ' . $dao->aantal_evenementen . ', waarvan ' . $dao->aantal_betalend . ' betalend - ' . $dao->evenementen . ')';
+      if ($addDetails) {
+        $list[$dao->id] = $dao->display_name . ' (Geen lid - aantal evenementen: ' . $dao->aantal_evenementen . ', waarvan ' . $dao->aantal_betalend . ' betalend - ' . $dao->evenementen . ')';
+      }
+      else {
+        $list[$dao->id] = $dao->display_name;
+      }
     }
 
-    $cachedList = $list;
     return $list;
+  }
+
+  private function getClusterProjects(int $contactId, int $year) {
+    $caseTypeProject = 4;
+    $relTypeBetrokkenOrganisatie = 19;
+
+    $sql = "
+      select
+        GROUP_CONCAT(distinct ca.subject) cases
+      from
+        civicrm_case ca
+      inner join
+        civicrm_relationship r on r.case_id = ca.id
+      where
+        ca.case_type_id = $caseTypeProject
+        and ifnull(year(ca.start_date), '1000') <= $year
+        and ifnull(year(ca.end_date), '3000') >= $year
+        and relationship_type_id = $relTypeBetrokkenOrganisatie
+        and ifnull(year(r.start_date), '1000') <= $year
+        and ifnull(year(r.end_date), '3000') >= $year
+        and (r.contact_id_a = $contactId or r.contact_id_b = $contactId)
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    if ($dao->fetch()) {
+      return $dao->cases;
+    }
+    else {
+      return null;
+    }
+  }
+
+  private function getOtherProjects(int $contactId, int $year) {
+    $caseTypes = '5, 9, 10'; // int. project = 10, cascase fin. = 9, demonstratie = 5
+    $relTypeBetrokkenOrganisatie = 19;
+
+    $sql = "
+      select
+        GROUP_CONCAT(distinct ca.subject) cases
+      from
+        civicrm_case ca
+      inner join
+        civicrm_relationship r on r.case_id = ca.id
+      where
+        ca.case_type_id in ($caseTypes)
+        and ifnull(year(ca.start_date), '1000') <= $year
+        and ifnull(year(ca.end_date), '3000') >= $year
+        and relationship_type_id = $relTypeBetrokkenOrganisatie
+        and ifnull(year(r.start_date), '1000') <= $year
+        and ifnull(year(r.end_date), '3000') >= $year
+        and (r.contact_id_a = $contactId or r.contact_id_b = $contactId)
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    if ($dao->fetch()) {
+      return $dao->cases;
+    }
+    else {
+      return null;
+    }
+  }
+
+  private function getAtLeastTwoEvents(int $contactId, int $year) {
+    $sql = "
+      select
+        count(e.id) aantal_evenementen,
+        GROUP_CONCAT(concat(e.start_date, ' ', e.title)) evenementen
+      from
+        civicrm_participant p
+      inner join
+        civicrm_event e on e.id = p.event_id
+      where
+        year(e.start_date) = $year
+      and
+        p.status_id in (1, 2)
+      and
+        p.contact_id = $contactId
+      group by
+        p.contact_id
+      having
+        count(e.id) > 1
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    if ($dao->fetch()) {
+      return $dao->evenementen;
+    }
+    else {
+      return null;
+    }
+  }
+
+  private function formatCpi1Details($projects, $otherProjects, $events) {
+    $details = '';
+
+    if ($projects) {
+      $details .= 'Innovatieve clusterprojecten: ' . $projects;
+    }
+
+    if ($otherProjects) {
+      if ($details) {
+        $details .= ', ';
+      }
+      $details .= 'Andere clusterprojecten: ' . $otherProjects;
+    }
+
+    if ($events) {
+      if ($details) {
+        $details .= ', ';
+      }
+      $details .= 'Evenementen: ' . $events;
+    }
+
+    if ($details) {
+      return " ($details)";
+    }
+    else {
+      return '';
+    }
   }
 
 }

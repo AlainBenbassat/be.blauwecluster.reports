@@ -8,7 +8,7 @@
   {$dbc1Members}
 </ul>
 <p>Aantal: {$dbc1MembersTotal}</p>
-<p>VRAAG VOOR ANN: kan een lid in eenzelfde kalenderjaar van type lidmaatschap veranderen?</p>
+<p>Opmerking: indien een contact van lidmaatschap veranderde in hetzelfde kalenderjaar, verschijnt het twee keer in bovenstaande lijst.</p>
 
 <h3>DBC 2. Aantal geassocieerde leden - partners</h3>
 <p><strong>Definitie</strong></p>
