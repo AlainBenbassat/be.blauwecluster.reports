@@ -178,20 +178,21 @@ class CRM_BlauweClusterKPI2025 {
       return $cachedList;
     }
 
-    $memberships = \Civi\Api4\Membership::get(FALSE)
-      ->addSelect('contact_id', 'contact_id.display_name')
-      ->addJoin('EntityTag AS entity_tag', 'INNER', ['contact_id', '=', 'entity_tag.entity_id'], ['entity_tag.entity_table', '=', "'civicrm_contact'"])
-      ->addJoin('Tag AS tag', 'INNER', ['entity_tag.tag_id', '=', 'tag.id'])
-      ->addWhere('start_date', '<=', "$year-12-31")
-      ->addWhere('end_date', '>=', "$year-01-01")
-      ->addWhere('membership_type_id:label', '=', 'Geassocieerd lid - Partner')
-      ->addWhere('owner_membership_id', 'IS NULL')
-      ->addWhere('tag.label', '=', 'Research & Development')
+    $tagIdResearchAndDevelopment = 22;
+    $contacts = \Civi\Api4\Contact::get(FALSE)
+      ->addSelect('id', 'display_name', 'membership.membership_type_id:label', 'membership.start_date', 'membership.end_date')
+      ->addJoin('EntityTag AS entity_tag', 'INNER', ['id', '=', 'entity_tag.entity_id'], ['entity_tag.entity_table', '=', "'civicrm_contact'"], ['entity_tag.tag_id', '=', $tagIdResearchAndDevelopment])
+      ->addJoin('Membership AS membership', 'INNER', ['membership.contact_id', '=', 'id'])
+      ->addWhere('membership.start_date', '<=', "$year-12-31")
+      ->addWhere('membership.end_date', '>=', "$year-01-01")
+      ->addWhere('membership.membership_type_id:label', '=', 'Geassocieerd lid - Partner')
+      ->addWhere('membership.owner_membership_id', 'IS NULL')
+      ->addWhere('is_deleted', '=', FALSE)
       ->execute();
 
     $list = [];
-    foreach ($memberships as $membership) {
-      $list[$memberships['contact_id']] = $memberships['contact_id.display_name'] . ' (Kenmerk Research & Development + ' . $membership['membership_type_id:label'] . ' van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')';
+    foreach ($contacts as $contact) {
+      $list[$contact['id']] = $contact['display_name'] . ' (Kenmerk Research & Development + ' . $contact['membership.membership_type_id:label'] . ' van/tot: ' . $contact['membership.start_date'] . ' - ' . $contact['membership.end_date'] . ')';
     }
 
     $cachedList = $list;
