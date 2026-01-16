@@ -213,6 +213,8 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_contact c
       where
         c.contact_type = 'Organization'
+      and
+        c.is_deleted = 0
       having
         c.id not in (select m.contact_id from civicrm_membership m where m.start_date <= '$year-12-31' and m.end_date >= '$year-01-01')
       and
