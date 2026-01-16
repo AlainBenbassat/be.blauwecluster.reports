@@ -164,7 +164,7 @@ class CRM_BlauweClusterKPI2025 {
 
     $list = [];
     foreach ($memberships as $membership) {
-      $list[$membership['contact_id']] = $membership['contact_id.display_name'];
+      $list[$membership['contact_id']] = $membership['contact_id.display_name'] . ' (' . $membership['membership_type_id:label'] . ' lid van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')';
     }
 
     $cachedList = $list;
@@ -191,7 +191,7 @@ class CRM_BlauweClusterKPI2025 {
 
     $list = [];
     foreach ($memberships as $membership) {
-      $list[$memberships['contact_id']] = $memberships['contact_id.display_name'];
+      $list[$memberships['contact_id']] = $memberships['contact_id.display_name'] . ' (Kenmerk Research & Development + ' . $membership['membership_type_id:label'] . ' van/tot: ' . $membership['start_date'] . ' - ' . $membership['end_date'] . ')';
     }
 
     $cachedList = $list;
