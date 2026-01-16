@@ -44,3 +44,22 @@
 </ul>
 <p>Aantal: {$cpi1ActorsTotal}</p>
 
+<h3>CPI 2. Aantal actieve KMO's binnen de cluster</h3>
+<p><strong>Definitie</strong></p>
+<p>Een KMO wordt gedefinieerd volgens de definitie van de Europese Unie (te hanteren naar best vermogen). Een KMO wordt als actief beschouwd wanneer ofwel:<br>
+  (1) Deelgenomen heeft aan ten minste één innovatief clusterproject in het kalenderjaar; of<br>
+  (2) Deelgenomen heeft aan ten minste 2 (andere) clusterinitiatieven (incl. workshop, evenementen, pilot) die betrekking hebben op innovatie in het kalenderjaar.</p>
+<p><strong>Actieve actoren binnen de cluster</strong></p>
+<ul>
+  {$cpi2Actors}
+</ul>
+<p>Aantal: {$cpi2ActorsTotal}</p>
+
+<h3>CPI 3. Aantal projecten dat kan leiden tot (of gericht is op) innovatie</h3>
+<p><strong>Definitie</strong></p>
+<p>Aantal innovatieve clusterprojecten beslist in het rapporteringsjaar, inclusief interclusterprojecten en (EU)projecten buiten de geoormerkte middelen indien er een duidelijke link is met de clusterwerking.</p>
+<p><strong>Projecten</strong></p>
+<ul>
+  {$cpi3Cases}
+</ul>
+<p>Aantal: {$cpi3CasesTotal}</p>

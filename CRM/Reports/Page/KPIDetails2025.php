@@ -32,6 +32,14 @@ class CRM_Reports_Page_KPIDetails2025 extends CRM_Core_Page {
     $this->assign('cpi1Actors', $items);
     $this->assign('cpi1ActorsTotal', $total);
 
+    [$total, $items] = $kpiHelper->getCPI2($year, FALSE);
+    $this->assign('cpi2Actors', $items);
+    $this->assign('cpi2ActorsTotal', $total);
+
+    [$total, $items] = $kpiHelper->getCPI3($year, FALSE);
+    $this->assign('cpi3Cases', $items);
+    $this->assign('cpi3CasesTotal', $total);
+
     parent::run();
   }
 

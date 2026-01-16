@@ -114,9 +114,10 @@ class CRM_BlauweClusterKPI2025 {
     foreach ($actors as $actorId => $actor) {
       $projects = $this->getClusterProjects($actorId, $year);
       $otherProjects = $this->getOtherProjects($actorId, $year);
-      $events = $this->getAtLeastTwoEvents($actorId, $year);
+      $events = $this->getEvents($actorId, $year);
+      $gathering = $this->getGatherings($actorId, $year);
 
-      $details = $this->formatCpi1Details($projects, $otherProjects, $events);
+      $details = $this->formatCpi1Details($projects, $otherProjects, $events, $gathering);
 
       if ($details) {
         $activeActors[] = $actor . $details;
@@ -135,9 +136,74 @@ class CRM_BlauweClusterKPI2025 {
     return [count($activeActors), $listItems];
   }
 
-  public function getCPI2(int $year, bool $justCount = TRUE) {}
+  public function getCPI2(int $year, bool $justCount = TRUE) {
+    $activeActors = [];
+    $actors = $this->getActors($year, FALSE);
 
-  public function getCPI3(int $year, bool $justCount = TRUE) {}
+    foreach ($actors as $actorId => $actor) {
+      if (!$this->isKMO($actorId)) {
+        continue;
+      }
+
+      $projects = $this->getClusterProjects($actorId, $year);
+      $otherProjects = $this->getOtherProjects($actorId, $year);
+      $events = $this->getEvents($actorId, $year);
+      $gathering = $this->getGatherings($actorId, $year);
+
+      $details = $this->formatCpi1Details($projects, $otherProjects, $events, $gathering);
+
+      if ($details) {
+        $activeActors[] = $actor . $details;
+      }
+    }
+
+    if ($justCount) {
+      return count($activeActors);
+    }
+
+    $listItems = '';
+    foreach ($activeActors as $actor) {
+      $listItems .= '<li>' . $actor . '</li>';
+    }
+
+    return [count($activeActors), $listItems];
+  }
+
+  public function getCPI3(int $year, bool $justCount = TRUE) {
+    $caseTypes = '4, 10'; // projects and int. projects
+
+    $sql = "
+      select
+        ca.subject,
+        ca.start_date,
+        ca.end_date
+      from
+        civicrm_case ca
+      where
+        ca.case_type_id in ($caseTypes)
+        and ifnull(year(ca.start_date), '1000') <= $year
+        and ifnull(year(ca.end_date), '3000') >= $year
+        and ca.is_deleted = 0
+      order by
+        ca.subject
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    $cases = [];
+    while ($dao->fetch()) {
+      $cases[] = $dao->subject . ' (' . $dao->start_date . ' - ' . $dao->end_date . ')';
+    }
+
+    if ($justCount) {
+      return count($cases);
+    }
+
+    $listItems = '';
+    foreach ($cases as $case) {
+      $listItems .= '<li>' . $case . '</li>';
+    }
+
+    return [count($cases), $listItems];
+  }
 
   public function getCPI4(int $year, bool $justCount = TRUE) {}
 
@@ -174,7 +240,7 @@ class CRM_BlauweClusterKPI2025 {
     $actorsKennisinstelling = $this->getActorsKennisinstelling($year, $addDetails);
     $actorsNietLid = $this->getActorsNietLid($year, $addDetails);
 
-    $actors = array_merge($actorsBetalendLidbedrijf, $actorsKennisinstelling, $actorsNietLid);
+    $actors = array_replace($actorsBetalendLidbedrijf, $actorsKennisinstelling, $actorsNietLid);
     natcasesort($actors);
 
     //$cachedList = $actors;
@@ -314,6 +380,7 @@ class CRM_BlauweClusterKPI2025 {
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
         and (r.contact_id_a = $contactId or r.contact_id_b = $contactId)
+        and ca.is_deleted = 0
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
     if ($dao->fetch()) {
@@ -325,7 +392,7 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   private function getOtherProjects(int $contactId, int $year) {
-    $caseTypes = '5, 9, 10'; // int. project = 10, cascase fin. = 9, demonstratie = 5
+    $caseTypes = '5, 8, 9, 10'; // int. project = 10, cascase fin. = 9, demonstratie = 5, opleiding = 8
     $relTypeBetrokkenOrganisatie = 19;
 
     $sql = "
@@ -343,6 +410,7 @@ class CRM_BlauweClusterKPI2025 {
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
         and (r.contact_id_a = $contactId or r.contact_id_b = $contactId)
+        and ca.is_deleted = 0
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
     if ($dao->fetch()) {
@@ -353,10 +421,9 @@ class CRM_BlauweClusterKPI2025 {
     }
   }
 
-  private function getAtLeastTwoEvents(int $contactId, int $year) {
+  private function getEvents(int $contactId, int $year) {
     $sql = "
       select
-        count(e.id) aantal_evenementen,
         GROUP_CONCAT(concat(e.start_date, ' ', e.title)) evenementen
       from
         civicrm_participant p
@@ -368,10 +435,6 @@ class CRM_BlauweClusterKPI2025 {
         p.status_id in (1, 2)
       and
         p.contact_id = $contactId
-      group by
-        p.contact_id
-      having
-        count(e.id) > 1
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
     if ($dao->fetch()) {
@@ -382,11 +445,13 @@ class CRM_BlauweClusterKPI2025 {
     }
   }
 
-  private function formatCpi1Details($projects, $otherProjects, $events) {
+  private function formatCpi1Details($projects, $otherProjects, $events, $gatherings) {
+    $count = 0;
     $details = '';
 
     if ($projects) {
       $details .= 'Innovatieve clusterprojecten: ' . $projects;
+      $count++;
     }
 
     if ($otherProjects) {
@@ -394,6 +459,7 @@ class CRM_BlauweClusterKPI2025 {
         $details .= ', ';
       }
       $details .= 'Andere clusterprojecten: ' . $otherProjects;
+      $count++;
     }
 
     if ($events) {
@@ -401,14 +467,53 @@ class CRM_BlauweClusterKPI2025 {
         $details .= ', ';
       }
       $details .= 'Evenementen: ' . $events;
+      $count++;
     }
 
-    if ($details) {
+    if ($gatherings) {
+      if ($details) {
+        $details .= ', ';
+      }
+      $details .= 'Bijeenkomsten: ' . $gatherings;
+      $count++;
+    }
+
+    if ($count >= 2) {
       return " ($details)";
     }
     else {
       return '';
     }
+  }
+
+  private function getGatherings(int $contactId, int $year) {
+    $list = '';
+
+    $activities = \Civi\Api4\Activity::get(FALSE)
+      ->addWhere('activity_type_id', '=', 1)
+      ->addWhere('activity_date_time', '>=', "$year-01-01")
+      ->addWhere('activity_date_time', '<=', "$year-12-31")
+      ->addWhere('target_contact_id', '=', $contactId)
+      ->addOrderBy('activity_date_time', 'ASC')
+      ->execute();
+    foreach ($activities as $activity) {
+      if ($list) {
+        $list .= ', ';
+      }
+
+      $list .= substr($activity['activity_date_time'], 0, 10);
+    }
+
+    return $list;
+  }
+
+  private function isKMO(int $contactId) {
+    $size = CRM_Core_DAO::singleValueQuery("SELECT grootte_27 FROM civicrm_value_organisatie_i_5 where entity_id = $contactId");
+    if ($size == 1 || $size == 2) {
+      return TRUE;
+    }
+
+    return FALSE;
   }
 
 }
