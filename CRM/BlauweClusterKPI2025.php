@@ -217,8 +217,6 @@ class CRM_BlauweClusterKPI2025 {
         c.id not in (select m.contact_id from civicrm_membership m where m.start_date <= '$year-12-31' and m.end_date >= '$year-01-01')
       and
         c.id in (select p.contact_id from civicrm_participant p inner join civicrm_event e on e.id = p.event_id where year(e.start_date) = $year)
-      and
-        c.is_deleted = 0
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
 
