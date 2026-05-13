@@ -63,3 +63,35 @@
   {$cpi3Cases}
 </ul>
 <p>Aantal: {$cpi3CasesTotal}</p>
+
+<h3>CPI 4. Aantal internationale samenwerkingsverbanden via clusterinitiatieven</h3>
+<p><strong>Definitie</strong></p>
+<p><strong>Internationale samenwerkingsverbanden via clusterinitiatieven</strong></p>
+<ul>
+  {$cpi4Cases}
+</ul>
+<p>Aantal: {$cpi4CasesTotal}</p>
+
+<h3>CPI 6. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten </h3>
+<p><strong>Definitie</strong></p>
+<p><strong>Ondernemingen</strong></p>
+<ul>
+  {$cpi6Actors}
+</ul>
+<p>Aantal: {$cpi6ActorsTotal}</p>
+
+<h3>CPI 7. Aantal unieke ondernemingen betrokken in samenwerkingsinitiatieven met minstens 3 ondernemingen</h3>
+<p><strong>Definitie</strong></p>
+<p><strong>Ondernemingen</strong></p>
+<ul>
+  {$cpi7Actors}
+</ul>
+<p>Aantal: {$cpi7ActorsTotal}</p>
+
+<h3>CPI 7bis. Het aandeel van KMO's betrokken in samenwerkingsinitiatieven tussen minstens 3 ondernemingen</h3>
+<p><strong>Definitie</strong></p>
+<p><strong>KMO's</strong></p>
+<ul>
+  {$cpi7bisActors}
+</ul>
+<p>Aantal: {$cpi7bisActorsTotal}</p>

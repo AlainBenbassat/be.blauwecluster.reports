@@ -228,11 +228,56 @@ class CRM_BlauweClusterKPI2025 {
 
   public function getCPI5(int $year, bool $justCount = TRUE) {}
 
-  public function getCPI6(int $year, bool $justCount = TRUE) {}
+  public function getCPI6(int $year, bool $justCount = TRUE) {
+    // = old KPI 3
+    $oldKpiHelper = new CRM_BlauweClusterKPI();
+    $mixedData = $oldKpiHelper->getC3($year, $justCount);
+    if ($justCount) {
+      return $mixedData;
+    }
+    else {
+      $listItems = '';
+      while ($mixedData->fetch()) {
+        $listItems .= '<li>' . $mixedData->item . '</li>';
+      }
 
-  public function getCPI7(int $year, bool $justCount = TRUE) {}
+      return [$mixedData->N, $listItems];
+    }
+  }
 
-  public function getCPI7Bis(int $year, bool $justCount = TRUE) {}
+  public function getCPI7(int $year, bool $justCount = TRUE) {
+    // = old KPI 5
+    $oldKpiHelper = new CRM_BlauweClusterKPI();
+    $mixedData = $oldKpiHelper->getC5($year, $justCount, FALSE);
+    if ($justCount) {
+      return $mixedData;
+    }
+    else {
+      $listItems = '';
+      while ($mixedData->fetch()) {
+        $listItems .= '<li>' . $mixedData->item . '</li>';
+      }
+
+      return [$mixedData->N, $listItems];
+    }
+  }
+
+  public function getCPI7Bis(int $year, bool $justCount = TRUE) {
+    // = old KPI 5 bis
+    $oldKpiHelper = new CRM_BlauweClusterKPI();
+    $mixedData = $oldKpiHelper->getC5($year, $justCount, TRUE);
+    if ($justCount) {
+      return $mixedData;
+    }
+    else {
+      $listItems = '';
+      while ($mixedData->fetch()) {
+        $listItems .= '<li>' . $mixedData->item . '</li>';
+      }
+
+      return [$mixedData->N, $listItems];
+    }
+  }
 
   public function getCPI8(int $year, bool $justCount = TRUE) {}
 
@@ -536,12 +581,13 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   private function getInternationalProjects(int $year): array {
+    $list = [];
     $caseTypes = '4, 10, 11'; // 4 = project, 10 = internationaal project, 11 = intercluster project
     $relTypeBetrokkenOrganisatie = 19;
 
     $sql = "
       select
-        GROUP_CONCAT(distinct ca.subject) cases
+        distinct ca.subject cases
       from
         civicrm_case ca
       inner join
@@ -553,25 +599,26 @@ class CRM_BlauweClusterKPI2025 {
         and relationship_type_id = $relTypeBetrokkenOrganisatie
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
-        and (r.contact_id_a = $contactId or r.contact_id_b = $contactId)
         and ca.is_deleted = 0
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
-    if ($dao->fetch()) {
-      return $dao->cases;
+    while ($dao->fetch()) {
+      $list[] = $dao->cases;
     }
-    else {
-      return null;
-    }
+
+    return $list;
   }
 
   private function getCommonMarketResearchProjects(int $year): array {
+    return [];
   }
 
   private function getCollaborationProjects(int $year): array {
+    return [];
   }
 
   private function getInternationalEvents(int $year): array {
+    return [];
   }
 
 }
