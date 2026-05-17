@@ -615,6 +615,9 @@ class CRM_BlauweClusterKPI2025 {
     $caseTypes = '4, 10, 11'; // 4 = project, 10 = internationaal project, 11 = intercluster project
     $relTypeBetrokkenOrganisatie = 19;
     $actorIds = array_keys($this->getActors($year, FALSE));
+    if (empty($actorIds)) {
+      return $list;
+    }
 
     $sql = "
       select
@@ -685,6 +688,9 @@ class CRM_BlauweClusterKPI2025 {
     $caseTypes = '3'; // 3 = gemeenschappelijke marktverkenning
     $relTypeBetrokkenOrganisatie = 19;
     $actorIds = array_keys($this->getActors($year, FALSE));
+    if (empty($actorIds)) {
+      return $list;
+    }
 
     $sql = "
       select
