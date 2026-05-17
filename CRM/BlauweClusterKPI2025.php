@@ -636,8 +636,7 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_contact c on c.id = r.contact_id_b
       where
         ca.case_type_id  in ($caseTypes)
-        and ifnull(year(ca.start_date), '1000') <= $year
-        and ifnull(year(ca.end_date), '3000') >= $year
+        and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
@@ -671,8 +670,7 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_contact c on c.id = r.contact_id_b
       where
         ca.case_type_id  in ($caseTypes)
-        and ifnull(year(ca.start_date), '1000') <= $year
-        and ifnull(year(ca.end_date), '3000') >= $year
+        and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
@@ -709,8 +707,7 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_contact c on c.id = r.contact_id_b
       where
         ca.case_type_id  in ($caseTypes)
-        and ifnull(year(ca.start_date), '1000') <= $year
-        and ifnull(year(ca.end_date), '3000') >= $year
+        and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
@@ -744,8 +741,7 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_contact c on c.id = r.contact_id_b
       where
         ca.case_type_id  in ($caseTypes)
-        and ifnull(year(ca.start_date), '1000') <= $year
-        and ifnull(year(ca.end_date), '3000') >= $year
+        and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
