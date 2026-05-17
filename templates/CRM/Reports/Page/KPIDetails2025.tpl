@@ -66,11 +66,18 @@
 
 <h3>CPI 4. Aantal internationale samenwerkingsverbanden via clusterinitiatieven</h3>
 <p><strong>Definitie</strong></p>
-<p><strong>Internationale samenwerkingsverbanden via clusterinitiatieven</strong></p>
+<p>(1) Aantal opgestarte internationale samenwerkingen, tussen clusterlid(leden) en internationale partij, waarbij de clusterorganisatie op een bepaald moment in het proces betrokken was bij het project (d.w.z. informeren, contact leggen, evenement, matchmaking, etc.), indien er een duidelijke link is met de clusterwerking.</p>
+<p>(2) Opgestarte (eenmalige en structurele) samenwerkingen van de speerpuntcluster met internationale actoren (zoals buitenlandse clusters).</p>
+<p><strong>Projecten</strong></p>
 <ul>
   {$cpi4Cases}
 </ul>
 <p>Aantal: {$cpi4CasesTotal}</p>
+
+<h3>CPI 5. Aandeel van clusterprojecten die leiden tot innovatie met een bijdrage aan maatschappelijke uitdagingen t.o.v. alle clusterprojecten</h3>
+<p><strong>Definitie</strong></p>
+<p><strong>Projecten</strong></p>
+<p>Aantal: ?</p>
 
 <h3>CPI 6. Aantal unieke ondernemingen die kennis verkrijgen via andere activiteiten dan samenwerkingsprojecten </h3>
 <p><strong>Definitie</strong></p>

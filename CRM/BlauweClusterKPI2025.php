@@ -117,7 +117,7 @@ class CRM_BlauweClusterKPI2025 {
       $events = $this->getEvents($actorId, $year);
       $gathering = $this->getGatherings($actorId, $year);
 
-      $details = $this->formatCpi1Details($projects, $otherProjects, $events, $gathering);
+      $details = $this->formatCpiDetails($projects, $otherProjects, $events, $gathering);
 
       if ($details) {
         $activeActors[] = $actor . $details;
@@ -150,7 +150,7 @@ class CRM_BlauweClusterKPI2025 {
       $events = $this->getEvents($actorId, $year);
       $gathering = $this->getGatherings($actorId, $year);
 
-      $details = $this->formatCpi1Details($projects, $otherProjects, $events, $gathering);
+      $details = $this->formatCpiDetails($projects, $otherProjects, $events, $gathering);
 
       if ($details) {
         $activeActors[] = $actor . $details;
@@ -170,7 +170,7 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   public function getCPI3(int $year, bool $justCount = TRUE) {
-    $caseTypes = '4, 10'; // projects and int. projects
+    $caseTypes = '4, 10, 11'; // projects, int. projects, intercluster projects
 
     $sql = "
       select
@@ -207,12 +207,21 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   public function getCPI4(int $year, bool $justCount = TRUE) {
-    $internationalProjects = $this->getInternationalProjects($year);
     $commonMarketResearchProjects = $this->getCommonMarketResearchProjects($year);
+    $internationalProjectsWithActors = $this->getInternationalProjectsWithActors($year);
     $collaborationProjects = $this->getCollaborationProjects($year);
-    $internationalEvents = $this->getInternationalEvents($year);
+    $internationalProjectsWithDBC = $this->getInternationalProjectsWithDBC($year);
+    $internationalEvents = []; //$this->getInternationalEvents($year);
 
-    $internationalActions = array_replace($internationalProjects, $commonMarketResearchProjects, $collaborationProjects, $internationalEvents);
+    $internationalActionsTemp = array_replace(
+      $commonMarketResearchProjects,
+      $internationalProjectsWithActors,
+      $collaborationProjects,
+      $internationalProjectsWithDBC,
+      $internationalEvents,
+    );
+
+    $internationalActions = array_unique($internationalActionsTemp);
 
     if ($justCount) {
       return count($internationalActions);
@@ -488,7 +497,7 @@ class CRM_BlauweClusterKPI2025 {
   private function getEvents(int $contactId, int $year) {
     $sql = "
       select
-        GROUP_CONCAT(concat(e.start_date, ' ', e.title)) evenementen
+        GROUP_CONCAT(concat(DATE_FORMAT(e.start_date, '%d/%m/%Y'), ' ', e.title)) evenementen
       from
         civicrm_participant p
       inner join
@@ -509,7 +518,28 @@ class CRM_BlauweClusterKPI2025 {
     }
   }
 
-  private function formatCpi1Details($projects, $otherProjects, $events, $gatherings) {
+  private function getInternationalEvents(int $year) {
+    // NIET AF
+    $sql = "
+      select
+        concat(DATE_FORMAT(e.start_date, '%d/%m/%Y'), ' ', e.title) evenementen
+      from
+        civicrm_event e
+      where
+        year(e.start_date) = $year
+      and
+        e.event_type_id = 1
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    if ($dao->fetch()) {
+      return $dao->evenementen;
+    }
+    else {
+      return null;
+    }
+  }
+
+  private function formatCpiDetails($projects, $otherProjects, $events, $gatherings) {
     $count = 0;
     $details = '';
 
@@ -580,18 +610,21 @@ class CRM_BlauweClusterKPI2025 {
     return FALSE;
   }
 
-  private function getInternationalProjects(int $year): array {
+  private function getInternationalProjectsWithActors(int $year): array {
     $list = [];
     $caseTypes = '4, 10, 11'; // 4 = project, 10 = internationaal project, 11 = intercluster project
     $relTypeBetrokkenOrganisatie = 19;
+    $actorIds = array_keys($this->getActors($year, FALSE));
 
     $sql = "
       select
-        distinct ca.subject cases
+        distinct ca.subject cases, group_concat(distinct c.display_name) orgs
       from
         civicrm_case ca
       inner join
         civicrm_relationship r on r.case_id = ca.id
+      inner join
+        civicrm_contact c on c.id = r.contact_id_b
       where
         ca.case_type_id  in ($caseTypes)
         and ifnull(year(ca.start_date), '1000') <= $year
@@ -600,25 +633,122 @@ class CRM_BlauweClusterKPI2025 {
         and ifnull(year(r.start_date), '1000') <= $year
         and ifnull(year(r.end_date), '3000') >= $year
         and ca.is_deleted = 0
+        and r.contact_id_b in (" . implode(',', $actorIds) . ")
+      group by
+        ca.id
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
     while ($dao->fetch()) {
-      $list[] = $dao->cases;
+      $list[] = $dao->cases . ' (' . $dao->orgs . ')';
+    }
+
+    return $list;
+  }
+
+  private function getInternationalProjectsWithDBC(int $year): array {
+    $list = [];
+    $caseTypes = '4, 10, 11'; // 4 = project, 10 = internationaal project, 11 = intercluster project
+    $relTypeBetrokkenOrganisatie = 19;
+    $actorIds = [1];
+
+    $sql = "
+      select
+        distinct ca.subject cases, group_concat(distinct c.display_name) orgs
+      from
+        civicrm_case ca
+      inner join
+        civicrm_relationship r on r.case_id = ca.id
+      inner join
+        civicrm_contact c on c.id = r.contact_id_b
+      where
+        ca.case_type_id  in ($caseTypes)
+        and ifnull(year(ca.start_date), '1000') <= $year
+        and ifnull(year(ca.end_date), '3000') >= $year
+        and relationship_type_id = $relTypeBetrokkenOrganisatie
+        and ifnull(year(r.start_date), '1000') <= $year
+        and ifnull(year(r.end_date), '3000') >= $year
+        and ca.is_deleted = 0
+        and r.contact_id_b in (" . implode(',', $actorIds) . ")
+      group by
+        ca.id
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    while ($dao->fetch()) {
+      $list[] = $dao->cases . ' (' . $dao->orgs . ')';
     }
 
     return $list;
   }
 
   private function getCommonMarketResearchProjects(int $year): array {
-    return [];
+    $list = [];
+    $caseTypes = '3'; // 3 = gemeenschappelijke marktverkenning
+    $relTypeBetrokkenOrganisatie = 19;
+    $actorIds = array_keys($this->getActors($year, FALSE));
+
+    $sql = "
+      select
+        distinct ca.subject cases, group_concat(distinct c.display_name) orgs
+      from
+        civicrm_case ca
+      inner join
+        civicrm_relationship r on r.case_id = ca.id
+      inner join
+        civicrm_contact c on c.id = r.contact_id_b
+      where
+        ca.case_type_id  in ($caseTypes)
+        and ifnull(year(ca.start_date), '1000') <= $year
+        and ifnull(year(ca.end_date), '3000') >= $year
+        and relationship_type_id = $relTypeBetrokkenOrganisatie
+        and ifnull(year(r.start_date), '1000') <= $year
+        and ifnull(year(r.end_date), '3000') >= $year
+        and ca.is_deleted = 0
+        and r.contact_id_b in (" . implode(',', $actorIds) . ")
+      group by
+        ca.id
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    while ($dao->fetch()) {
+      $list[] = $dao->cases . ' (' . $dao->orgs . ')';
+    }
+
+    return $list;
   }
 
   private function getCollaborationProjects(int $year): array {
-    return [];
+    $list = [];
+    $caseTypes = '6'; // 6 = samenwerkingsovereenkomst
+    $relTypeBetrokkenOrganisatie = 19;
+    $actorIds = [1];
+
+    $sql = "
+      select
+        distinct ca.subject cases, group_concat(distinct c.display_name) orgs
+      from
+        civicrm_case ca
+      inner join
+        civicrm_relationship r on r.case_id = ca.id
+      inner join
+        civicrm_contact c on c.id = r.contact_id_b
+      where
+        ca.case_type_id  in ($caseTypes)
+        and ifnull(year(ca.start_date), '1000') <= $year
+        and ifnull(year(ca.end_date), '3000') >= $year
+        and relationship_type_id = $relTypeBetrokkenOrganisatie
+        and ifnull(year(r.start_date), '1000') <= $year
+        and ifnull(year(r.end_date), '3000') >= $year
+        and ca.is_deleted = 0
+        and r.contact_id_b in (" . implode(',', $actorIds) . ")
+      group by
+        ca.id
+    ";
+    $dao = CRM_Core_DAO::executeQuery($sql);
+    while ($dao->fetch()) {
+      $list[] = $dao->cases . ' (' . $dao->orgs . ')';
+    }
+
+    return $list;
   }
 
-  private function getInternationalEvents(int $year): array {
-    return [];
-  }
 
 }
