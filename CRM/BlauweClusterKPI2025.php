@@ -618,7 +618,7 @@ class CRM_BlauweClusterKPI2025 {
 
   private function getInternationalProjectsWithActors(int $year): array {
     $list = [];
-    $caseTypes = '4, 10, 11'; // 4 = project, 10 = internationaal project, 11 = intercluster project
+    $caseTypes = '10'; //  10 = internationaal project
     $relTypeBetrokkenOrganisatie = 19;
     $actorIds = array_keys($this->getActors($year, FALSE));
     if (empty($actorIds)) {
