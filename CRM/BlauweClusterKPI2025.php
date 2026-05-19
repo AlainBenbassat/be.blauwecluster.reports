@@ -207,7 +207,7 @@ class CRM_BlauweClusterKPI2025 {
     $internationalProjectsWithActors = $this->getInternationalProjectsWithActors($year);
     $collaborationProjects = $this->getCollaborationProjects($year);
     $internationalProjectsWithDBC = $this->getInternationalProjectsWithDBC($year);
-    $internationalEvents = []; //$this->getInternationalEvents($year);
+    $internationalEvents = $this->getInternationalEvents($year);
 
     $internationalActionsTemp = array_replace(
       $commonMarketResearchProjects,
@@ -538,7 +538,8 @@ class CRM_BlauweClusterKPI2025 {
   }
 
   private function getInternationalEvents(int $year) {
-    // NIET AF
+    $list = [];
+
     $sql = "
       select
         concat(DATE_FORMAT(e.start_date, '%d/%m/%Y'), ' ', e.title) evenementen
@@ -547,15 +548,14 @@ class CRM_BlauweClusterKPI2025 {
       where
         year(e.start_date) = $year
       and
-        e.event_type_id = 1
+        e.event_type_id = 11
     ";
     $dao = CRM_Core_DAO::executeQuery($sql);
-    if ($dao->fetch()) {
-      return $dao->evenementen;
+    while ($dao->fetch()) {
+      $list[] = $dao->evenementen;
     }
-    else {
-      return null;
-    }
+
+    return $list;
   }
 
   private function formatCpiDetails($projects, $otherProjects, $events, $gatherings) {
