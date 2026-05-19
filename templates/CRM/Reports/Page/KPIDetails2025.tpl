@@ -68,7 +68,7 @@
 <p><strong>Definitie</strong></p>
 <p>(1) Aantal opgestarte internationale samenwerkingen, tussen clusterlid(leden) en internationale partij, waarbij de clusterorganisatie op een bepaald moment in het proces betrokken was bij het project (d.w.z. informeren, contact leggen, evenement, matchmaking, etc.), indien er een duidelijke link is met de clusterwerking.</p>
 <p>(2) Opgestarte (eenmalige en structurele) samenwerkingen van de speerpuntcluster met internationale actoren (zoals buitenlandse clusters).</p>
-<p><strong>Projecten</strong></p>
+<p><strong>Internationale samenwerkingsverbanden</strong></p>
 <ul>
   {$cpi4Cases}
 </ul>
