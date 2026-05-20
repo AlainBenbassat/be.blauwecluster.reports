@@ -634,12 +634,12 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_relationship r on r.case_id = ca.id
       inner join
         civicrm_contact c on c.id = r.contact_id_b
+      inner join
+        civicrm_value_extra_info_do_14 ei on ei.entity_id = ca.id
       where
         ca.case_type_id  in ($caseTypes)
-        and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
-        and ifnull(year(r.start_date), '1000') <= $year
-        and ifnull(year(r.end_date), '3000') >= $year
+        and ei.jaar_goedkeuring_beslissing_73 = $year
         and ca.is_deleted = 0
         and r.contact_id_b in (" . implode(',', $actorIds) . ")
       group by
@@ -655,7 +655,7 @@ class CRM_BlauweClusterKPI2025 {
 
   private function getInternationalProjectsWithDBC(int $year): array {
     $list = [];
-    $caseTypes = '4, 10, 11'; // 4 = project, 10 = internationaal project, 11 = intercluster project
+    $caseTypes = '10'; // 10 = internationaal project
     $relTypeBetrokkenOrganisatie = 19;
     $actorIds = [1];
 
@@ -668,12 +668,12 @@ class CRM_BlauweClusterKPI2025 {
         civicrm_relationship r on r.case_id = ca.id
       inner join
         civicrm_contact c on c.id = r.contact_id_b
+      inner join
+        civicrm_value_extra_info_do_14 ei on ei.entity_id = ca.id
       where
         ca.case_type_id  in ($caseTypes)
-        and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
-        and ifnull(year(r.start_date), '1000') <= $year
-        and ifnull(year(r.end_date), '3000') >= $year
+        and ei.jaar_goedkeuring_beslissing_73 = $year
         and ca.is_deleted = 0
         and r.contact_id_b in (" . implode(',', $actorIds) . ")
       group by
@@ -709,8 +709,6 @@ class CRM_BlauweClusterKPI2025 {
         ca.case_type_id  in ($caseTypes)
         and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
-        and ifnull(year(r.start_date), '1000') <= $year
-        and ifnull(year(r.end_date), '3000') >= $year
         and ca.is_deleted = 0
         and r.contact_id_b in (" . implode(',', $actorIds) . ")
       group by
@@ -743,8 +741,6 @@ class CRM_BlauweClusterKPI2025 {
         ca.case_type_id  in ($caseTypes)
         and ifnull(year(ca.start_date), '1000') = $year
         and relationship_type_id = $relTypeBetrokkenOrganisatie
-        and ifnull(year(r.start_date), '1000') <= $year
-        and ifnull(year(r.end_date), '3000') >= $year
         and ca.is_deleted = 0
         and r.contact_id_b in (" . implode(',', $actorIds) . ")
       group by
