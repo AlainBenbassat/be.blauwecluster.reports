@@ -51,7 +51,9 @@ class CRM_BlauweClusterKPI2025 {
         'Premium',
         'Strategisch',
         'Standaard',
-        'Verkennend'
+        'Clusterlid',
+        'Verkennend',
+        'Dochter van premium of strategisch lid',
       ])
       ->addWhere('owner_membership_id', 'IS NULL')
       ->addOrderBy('contact_id.sort_name', 'ASC')
@@ -347,6 +349,7 @@ class CRM_BlauweClusterKPI2025 {
         'Premium',
         'Strategisch',
         'Standaard',
+        'Clusterlid',
         'Verkennend',
         'Dochter van premium of strategisch lid'
       ])
